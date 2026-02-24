@@ -1,6 +1,8 @@
+/* Columns block */
 .columns > div {
   display: flex;
   flex-direction: column;
+  gap: var(--spacing-m);
 }
 
 .columns img {
@@ -17,17 +19,69 @@
 
 .columns > div > .columns-img-col img {
   display: block;
+  border-radius: 8px;
+}
+
+/* Text columns styling */
+.columns > div > div:not(.columns-img-col) h2 {
+  margin-top: 0;
+}
+
+.columns > div > div:not(.columns-img-col) h3 {
+  margin-top: 0;
+}
+
+/* Links as buttons in columns */
+.columns .button-container a.button {
+  font-size: var(--body-font-size-s);
+}
+
+/* Secondary buttons (outline style) in columns */
+.columns .button-container:nth-child(n+2) a.button {
+  background-color: var(--color-white);
+  border: 2px solid var(--color-navy);
+  color: var(--color-navy);
+}
+
+/* List styling in columns */
+.columns ul {
+  padding-left: var(--spacing-m);
+}
+
+.columns li {
+  margin-bottom: var(--spacing-xs);
 }
 
 @media (width >= 900px) {
   .columns > div {
-    align-items: center;
+    align-items: flex-start;
     flex-direction: unset;
-    gap: 24px;
+    gap: var(--spacing-l);
   }
 
   .columns > div > div {
     flex: 1;
     order: unset;
   }
+}
+
+/* Dark section columns adjustments */
+.dark .columns > div > div h2,
+.dark .columns > div > div h3 {
+  color: var(--color-white);
+}
+
+.dark .columns p,
+.dark .columns li {
+  color: var(--color-white);
+}
+
+.dark .columns a.button:any-link {
+  background-color: var(--color-white);
+  color: var(--color-navy);
+  border-color: transparent;
+}
+
+.dark .columns a:any-link:not(.button) {
+  color: var(--color-white);
 }

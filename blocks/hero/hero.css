@@ -1,37 +1,128 @@
+/* Hero block - Nationwide homepage hero */
+
+/* Full-width container */
+.hero-container {
+  margin: 0;
+}
+
 .hero-container .hero-wrapper {
   max-width: unset;
   padding: 0;
 }
 
+/* Hero block - dark navy background */
 .hero {
   position: relative;
-  padding: 40px 24px;
-  min-height: 300px;
+  background-color: var(--color-navy);
+  color: var(--color-white);
+  padding: var(--spacing-l) var(--spacing-m);
+  min-height: 320px;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  overflow: hidden;
 }
 
-.hero h1 {
+/* Image row - badge/award image */
+.hero > div:first-child {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: var(--spacing-m);
+}
+
+/* Text content row */
+.hero > div:last-child {
   max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
-  color: var(--background-color);
+  width: 100%;
+  z-index: 1;
+}
+
+.hero > div:last-child > div {
+  max-width: 600px;
+}
+
+/* Headings */
+.hero h1,
+.hero h2,
+.hero h3 {
+  color: var(--color-white);
+  margin-top: 0;
+  font-size: var(--heading-font-size-xxl);
+  line-height: 1.1;
+}
+
+/* Italic emphasis in heading - use display font */
+.hero h1 em,
+.hero h2 em,
+.hero h3 em {
+  font-family: var(--display-font-family);
+  font-style: italic;
+  font-weight: 500;
+}
+
+/* Body text */
+.hero p {
+  color: var(--color-white);
+  font-size: var(--body-font-size-s);
+  line-height: 1.5;
+  margin: var(--spacing-s) 0;
 }
 
 .hero picture {
-  position: absolute;
-  z-index: -1;
-  inset: 0;
-  object-fit: cover;
-  box-sizing: border-box;
+  position: relative;
+  display: block;
 }
 
 .hero img {
-  object-fit: cover;
-  width: 100%;
-  height: 100%;
+  width: 200px;
+  height: auto;
+  object-fit: contain;
 }
 
+/* CTA button - white on navy */
+.hero a.button:any-link {
+  background-color: var(--color-white);
+  color: var(--color-navy);
+  border-color: transparent;
+  font-size: var(--body-font-size-s);
+}
+
+.hero a.button:hover,
+.hero a.button:focus {
+  box-shadow: 0 0 0 4px var(--color-hover-ring);
+}
+
+/* Desktop: side-by-side layout */
 @media (width >= 900px) {
   .hero {
-    padding: 40px 32px;
+    flex-direction: row;
+    justify-content: center;
+    padding: var(--spacing-xl) 32px;
+    min-height: 420px;
+    gap: var(--spacing-l);
+  }
+
+  /* Text on left */
+  .hero > div:last-child {
+    flex: 1 1 60%;
+    display: flex;
+    align-items: center;
+    order: -1;
+  }
+
+  /* Badge on right */
+  .hero > div:first-child {
+    flex: 0 0 auto;
+    margin-top: 0;
+    order: 1;
+  }
+
+  .hero img {
+    width: 280px;
+  }
+
+  .hero h2 {
+    font-size: 52px;
   }
 }

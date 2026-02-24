@@ -1,19 +1,18 @@
+/* Cards block - base styles (feature cards) */
 .cards > ul {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(257px, 1fr));
-  gap: 24px;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-m);
 }
 
 .cards > ul > li {
-  border: 1px solid #dadada;
   background-color: var(--background-color);
-}
-
-.cards .cards-card-body {
-  margin: 16px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 8%);
 }
 
 .cards .cards-card-image {
@@ -22,6 +21,124 @@
 
 .cards > ul > li img {
   width: 100%;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 16 / 9;
   object-fit: cover;
+}
+
+.cards .cards-card-body {
+  padding: var(--spacing-m);
+}
+
+.cards .cards-card-body p:first-child strong {
+  font-size: var(--heading-font-size-s);
+  display: block;
+  margin-bottom: var(--spacing-xs);
+}
+
+.cards .cards-card-body p {
+  font-size: var(--body-font-size-s);
+  margin: var(--spacing-xs) 0;
+}
+
+.cards .cards-card-body a:any-link:not(.button) {
+  color: var(--link-color);
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+@media (width >= 900px) {
+  .cards > ul {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ========================================
+   Icon Nav variant - horizontal icon links
+   ======================================== */
+.cards.icon-nav > ul {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-s);
+}
+
+.cards.icon-nav > ul > li {
+  background: transparent;
+  border-radius: 8px;
+  border: 2px solid #dde1ea;
+  box-shadow: none;
+  text-align: center;
+  padding: var(--spacing-s);
+  transition: border-color 0.2s;
+}
+
+.cards.icon-nav > ul > li:hover {
+  border-color: var(--color-navy);
+}
+
+.cards.icon-nav .cards-card-image {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--spacing-xs);
+}
+
+.cards.icon-nav > ul > li img {
+  width: 48px;
+  height: 48px;
+  aspect-ratio: 1;
+  object-fit: contain;
+}
+
+.cards.icon-nav .cards-card-body {
+  padding: 0;
+}
+
+.cards.icon-nav .cards-card-body p {
+  margin: 0;
+  font-size: var(--body-font-size-xs);
+}
+
+.cards.icon-nav .cards-card-body p:first-child strong {
+  font-size: var(--body-font-size-xs);
+  font-weight: 700;
+  margin-bottom: 0;
+}
+
+/* Hide the duplicate link text - show only the bold label */
+.cards.icon-nav .cards-card-body p:last-child {
+  display: none;
+}
+
+/* Make the whole card clickable via the link */
+.cards.icon-nav .cards-card-body a.button {
+  background: transparent;
+  color: var(--color-navy);
+  padding: 0;
+  margin: 0;
+  font-size: var(--body-font-size-xs);
+  font-weight: 700;
+  min-height: unset;
+  text-decoration: underline;
+  white-space: normal;
+}
+
+.cards.icon-nav .cards-card-body a.button:hover {
+  box-shadow: none;
+  text-decoration: underline;
+}
+
+@media (width >= 600px) {
+  .cards.icon-nav > ul {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (width >= 900px) {
+  .cards.icon-nav > ul {
+    grid-template-columns: repeat(7, 1fr);
+  }
+
+  .cards.icon-nav > ul > li img {
+    width: 56px;
+    height: 56px;
+  }
 }

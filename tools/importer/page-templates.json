@@ -1,0 +1,32 @@
+{
+  "templates": [
+    {
+      "name": "homepage",
+      "urls": ["https://www.nationwide.co.uk"],
+      "description": "Nationwide Building Society homepage with hero banner, product navigation cards, feature cards, call checker, internet banking, service quality rankings, and APP scams data",
+      "blocks": [
+        {
+          "name": "hero",
+          "instances": [
+            "div[class*=\"StyledCompoenents__HeroContainerInner\"]"
+          ]
+        },
+        {
+          "name": "cards",
+          "instances": [
+            "ol[class*=\"IconBlock__StyledOl\"]",
+            "div[class*=\"CardsGrid__StyledCardsGrid\"]"
+          ]
+        },
+        {
+          "name": "columns",
+          "instances": [
+            "div[class*=\"ImageWithContent__StyledContentArea\"]",
+            "div[class*=\"SideBySideLayout__SideBySideGrid\"]",
+            "div[class*=\"ContentWithSidebar__ContentWithSideBarGrid\"]"
+          ]
+        }
+      ]
+    }
+  ]
+}

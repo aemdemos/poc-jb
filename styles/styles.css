@@ -337,3 +337,9 @@ main .section.dark button.secondary {
   border-color: var(--color-white);
   color: var(--color-white);
 }
+
+/* Hide metadata and section-metadata blocks */
+.metadata,
+.section-metadata {
+  display: none;
+}

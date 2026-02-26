@@ -15,57 +15,66 @@
   position: relative;
   background-color: var(--color-navy);
   color: var(--color-white);
-  padding: var(--spacing-l) var(--spacing-m);
+  padding: var(--spacing-s) var(--spacing-s) var(--spacing-l);
   min-height: 320px;
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   align-items: center;
   overflow: hidden;
 }
 
-/* Image row - badge/award image */
+/* Row 1 - badge/award image */
 .hero > div:first-child {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: var(--spacing-m);
+  margin-bottom: 8px;
+  width: 100%;
 }
 
-/* Text content row */
-.hero > div:last-child {
-  max-width: 1200px;
+/* Row 2 - text content */
+.hero > div:nth-child(2) {
   width: 100%;
   z-index: 1;
 }
 
-.hero > div:last-child > div {
-  max-width: 600px;
+.hero > div:nth-child(2) > div {
+  max-width: 100%;
 }
 
-/* Headings */
+/* Row 3 - switch guarantee image (appended by JS) */
+.hero > div:last-child:nth-child(3) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 8px;
+}
+
+/* Headings - mobile first (40px/48px) */
 .hero h1,
 .hero h2,
 .hero h3 {
   color: var(--color-white);
   margin-top: 0;
-  font-size: var(--heading-font-size-xxl);
-  line-height: 1.1;
+  font-family: var(--display-font-family);
+  font-weight: 500;
+  font-size: 40px;
+  line-height: 48px;
 }
 
-/* Italic emphasis in heading - use display font */
+/* Italic emphasis in heading - red accent */
 .hero h1 em,
 .hero h2 em,
 .hero h3 em {
-  font-family: var(--display-font-family);
-  font-style: italic;
-  font-weight: 500;
+  font-style: normal;
+  color: var(--color-red);
 }
 
 /* Body text */
 .hero p {
   color: var(--color-white);
   font-size: var(--body-font-size-s);
-  line-height: 1.5;
+  line-height: 1.4;
   margin: var(--spacing-s) 0;
 }
 
@@ -74,18 +83,29 @@
   display: block;
 }
 
-.hero img {
-  width: 200px;
-  height: auto;
-  object-fit: contain;
+/* Badge image - mobile: constrain size and crop transparent padding */
+.hero > div:first-child img {
+  width: 260px;
+  height: 160px;
+  object-fit: cover;
 }
 
-/* CTA button - white on navy */
+/* Switch guarantee image - mobile: 106px, crop transparent padding */
+.hero > div:last-child:nth-child(3) img {
+  width: 106px;
+  height: 50px;
+  object-fit: cover;
+}
+
+/* CTA button - white on navy, full width on mobile */
 .hero a.button:any-link {
   background-color: var(--color-white);
   color: var(--color-navy);
   border-color: transparent;
   font-size: var(--body-font-size-s);
+  font-weight: 700;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .hero a.button:hover,
@@ -93,36 +113,112 @@
   box-shadow: 0 0 0 4px var(--color-hover-ring);
 }
 
-/* Desktop: side-by-side layout */
+/* Tablet: badge on top, full-width text, guarantee on its own row */
+@media (width >= 600px) {
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto 1fr auto;
+    padding: 24px 48px;
+    min-height: 400px;
+    gap: 0 var(--spacing-m);
+  }
+
+  /* Badge spans full width on top row, centered */
+  .hero > div:first-child {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    margin-bottom: 8px;
+    justify-content: center;
+  }
+
+  /* Text spans full width, second row */
+  .hero > div:nth-child(2) {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  /* Guarantee absolutely positioned at bottom-right, same line as button */
+  .hero > div:last-child:nth-child(3) {
+    position: absolute;
+    bottom: 24px;
+    right: 48px;
+    margin-top: 0;
+  }
+
+  /* Badge image - tablet: crop transparent padding */
+  .hero > div:first-child img {
+    width: 360px;
+    height: 220px;
+    object-fit: cover;
+  }
+
+  /* Guarantee at 141px - reset mobile crop */
+  .hero > div:last-child:nth-child(3) img {
+    width: 141px;
+    height: auto;
+    object-fit: contain;
+  }
+
+  /* Heading - tablet (56px/60px) */
+  .hero h1,
+  .hero h2,
+  .hero h3 {
+    font-size: 56px;
+    line-height: 60px;
+  }
+
+  .hero p {
+    font-size: var(--body-font-size-m);
+  }
+
+  /* Button auto-width on tablet+ */
+  .hero a.button:any-link {
+    width: auto;
+    font-size: var(--body-font-size-m);
+  }
+}
+
+/* Desktop: 2-column side-by-side layout */
 @media (width >= 900px) {
   .hero {
-    flex-direction: row;
-    justify-content: center;
-    padding: var(--spacing-xl) 32px;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: 1fr auto;
+    padding: var(--spacing-xl) 90px;
     min-height: 420px;
-    gap: var(--spacing-l);
+    gap: 0 var(--spacing-l);
   }
 
-  /* Text on left */
-  .hero > div:last-child {
-    flex: 1 1 60%;
-    display: flex;
-    align-items: center;
-    order: -1;
-  }
-
-  /* Badge on right */
+  /* Badge moves to right column, top row */
   .hero > div:first-child {
-    flex: 0 0 auto;
-    margin-top: 0;
-    order: 1;
+    grid-column: 2;
+    grid-row: 1;
+    margin-bottom: 0;
   }
 
-  .hero img {
-    width: 280px;
+  /* Text on left, spanning both rows */
+  .hero > div:nth-child(2) {
+    grid-column: 1;
+    grid-row: 1 / -1;
+  }
+
+  /* Guarantee absolutely positioned at bottom-right, same line as button */
+  .hero > div:last-child:nth-child(3) {
+    bottom: var(--spacing-xl);
+    right: 130px;
+    margin-right: 0;
+  }
+
+  /* Badge at 408px on desktop - no cropping needed in side column */
+  .hero > div:first-child img {
+    width: 408px;
+    height: auto;
+    max-width: none;
+    object-fit: contain;
   }
 
   .hero h2 {
-    font-size: 52px;
+    font-size: 76px;
+    line-height: 80px;
   }
 }

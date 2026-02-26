@@ -65,6 +65,15 @@
 /* fallback fonts */
 @font-face {
   font-family: nationwidefounders-fallback;
+  font-weight: 400;
+  size-adjust: 100%;
+  ascent-override: 95%;
+  src: local('Arial');
+}
+
+@font-face {
+  font-family: nationwidefounders-fallback;
+  font-weight: 700;
   size-adjust: 100%;
   ascent-override: 95%;
   src: local('Arial');

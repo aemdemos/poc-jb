@@ -1,48 +1,34 @@
-/* header and nav layout */
+/* ==========================================================================
+   Nationwide Header — 3-layer responsive header
+   Layer 1: Context tabs (Personal / Business)
+   Layer 2: Main bar (logo, search, utility tools)
+   Layer 3: Category navigation (desktop) / Flyout (mobile + tablet)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   GLOBAL RESET & ROOT CONTAINER
+   -------------------------------------------------------------------------- */
+
 header .nav-wrapper {
-  background-color: var(--background-color);
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
   z-index: 2;
-  position: fixed;
+  font-family: var(--body-font-family);
+  color: var(--color-navy);
 }
 
 header nav {
   box-sizing: border-box;
-  display: grid;
-  grid-template:
-    'hamburger brand tools' var(--nav-height)
-    'sections sections sections' 1fr / auto 1fr auto;
-  align-items: center;
-  gap: 0 24px;
-  margin: auto;
-  max-width: 1248px;
-  height: var(--nav-height);
-  padding: 0 24px;
-  font-family: var(--body-font-family);
+  margin: 0;
+  padding: 0;
 }
 
-header nav[aria-expanded='true'] {
-  grid-template:
-    'hamburger brand' var(--nav-height)
-    'sections sections' 1fr
-    'tools tools' var(--nav-height) / auto 1fr;
-  overflow-y: auto;
-  min-height: 100dvh;
-}
-
-@media (width >= 900px) {
-  header nav {
-    display: flex;
-    justify-content: space-between;
-    gap: 0 32px;
-    max-width: 1264px;
-    padding: 0 32px;
-  }
-
-  header nav[aria-expanded='true'] {
-    min-height: 0;
-    overflow: visible;
-  }
+header nav *,
+header nav *::before,
+header nav *::after {
+  box-sizing: border-box;
 }
 
 header nav p {
@@ -52,36 +38,273 @@ header nav p {
 
 header nav a:any-link {
   color: currentcolor;
+  text-decoration: none;
 }
 
-/* hamburger */
-header nav .nav-hamburger {
-  grid-area: hamburger;
-  height: 22px;
+header nav a:hover {
+  text-decoration: none;
+}
+
+header nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* --------------------------------------------------------------------------
+   LAYER 1 — CONTEXT TABS (Personal / Business top bar)
+   -------------------------------------------------------------------------- */
+
+header nav .nav-context {
+  background-color: #1a2c59;
+  width: 100%;
+  height: 44px;
+}
+
+header nav .nav-context p {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-s);
+  max-width: 1260px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-m);
+  height: 100%;
+}
+
+header nav .nav-context a {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  color: #ccced2;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1;
+  padding: 8px;
+  text-decoration: none;
+  transition: color 0.2s, background-color 0.2s;
+  box-sizing: border-box;
+}
+
+header nav .nav-context a:hover {
+  color: var(--color-white);
+  text-decoration: none;
+}
+
+header nav .nav-context a.nav-context-active {
+  background-color: var(--color-navy);
+  color: var(--color-white);
+  font-weight: 500;
+  padding: 8px 8px 6px;
+  border-bottom: 2px solid rgb(117 158 255);
+}
+
+@media (width >= 900px) {
+  header nav .nav-context p {
+    padding: 0 32px;
+  }
+
+  header nav .nav-context a {
+    font-size: var(--body-font-size-s);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   LAYER 2 — MAIN HEADER BAR (logo + search + tools)
+   -------------------------------------------------------------------------- */
+
+header nav .nav-main-bar {
+  background-color: var(--color-navy);
+  width: 100%;
+  color: var(--color-white);
+}
+
+/* --- MOBILE layout (<600px): grid with logo left, tools right, search below --- */
+
+header nav .nav-main-bar .nav-main-bar-inner {
+  display: grid;
+  grid-template: "brand  tools" 72px "search search" auto / auto 1fr;
+  align-items: center;
+  max-width: 1260px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-m);
+  gap: 0;
+}
+
+/* ---------- Brand / Logo ---------- */
+
+header nav .nav-brand {
+  grid-area: brand;
+  display: flex;
+  align-items: center;
+  height: 72px;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+header nav .nav-brand a {
+  display: flex;
+  align-items: center;
+  line-height: 0;
+}
+
+/* Mobile: show icon only */
+header nav .nav-brand-icon {
   display: flex;
   align-items: center;
 }
 
+header nav .nav-brand-icon svg,
+header nav .nav-brand-icon img {
+  width: 33px;
+  height: auto;
+}
+
+header nav .nav-brand-logo {
+  display: none;
+}
+
+/* ---------- Tools (utility icons) ---------- */
+
+header nav .nav-tools {
+  grid-area: tools;
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-end;
+  gap: var(--spacing-s);
+  height: 72px;
+}
+
+header nav .nav-tools ul {
+  display: flex;
+  align-items: stretch;
+  gap: var(--spacing-s);
+}
+
+header nav .nav-tools ul li {
+  display: flex;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+header nav .nav-tools ul li a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  justify-content: center;
+  color: var(--color-white);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+  padding: 8px 4px 4px;
+  border-radius: 4px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+header nav .nav-tools ul li a:hover {
+  text-decoration: none;
+}
+
+header nav .nav-tools ul li a:hover span:last-child {
+  text-decoration: underline;
+}
+
+header nav .nav-tools ul li a .icon-svg,
+header nav .nav-tools ul li a .icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+header nav .nav-tools ul li a .icon-svg svg,
+header nav .nav-tools ul li a .icon img {
+  width: 24px;
+  height: 24px;
+}
+
+/* Hide Help icon on mobile */
+header nav .nav-tools ul li.nav-tools-help {
+  display: none;
+}
+
+/* ---------- Login ---------- */
+
+header nav .nav-login {
+  display: flex;
+}
+
+/* stylelint-disable no-descending-specificity */
+header nav .nav-login a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  color: var(--color-white);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+  padding: 0 4px 4px;
+  border-radius: 4px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+header nav .nav-login a:hover span:last-child {
+  text-decoration: underline;
+}
+
+header nav .nav-login a .icon-svg,
+header nav .nav-login a .icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+header nav .nav-login a .icon-svg svg,
+header nav .nav-login a .icon img {
+  width: 24px;
+  height: 24px;
+}
+/* stylelint-enable no-descending-specificity */
+
+/* ---------- Hamburger (mobile + tablet) ---------- */
+
+header nav .nav-hamburger {
+  display: flex;
+  align-items: flex-start;
+  margin-left: var(--spacing-xs);
+}
+
 header nav .nav-hamburger button {
-  height: 22px;
-  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  justify-content: center;
+  background: none;
   border: 0;
-  border-radius: 0;
-  padding: 0;
-  background-color: var(--background-color);
-  color: inherit;
-  overflow: initial;
-  text-overflow: initial;
-  white-space: initial;
+  border-radius: 4px;
+  padding: 8px 4px 4px;
+  color: var(--color-white);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+  cursor: pointer;
+  min-height: auto;
+  margin: 0;
+  white-space: nowrap;
+}
+
+header nav .nav-hamburger button:hover,
+header nav .nav-hamburger button:focus {
+  box-shadow: none;
 }
 
 header nav .nav-hamburger-icon,
 header nav .nav-hamburger-icon::before,
 header nav .nav-hamburger-icon::after {
-  box-sizing: border-box;
   display: block;
   position: relative;
-  width: 20px;
+  width: 22px;
 }
 
 header nav .nav-hamburger-icon::before,
@@ -99,12 +322,16 @@ header nav[aria-expanded='false'] .nav-hamburger-icon::after {
   background: currentcolor;
 }
 
+header nav[aria-expanded='false'] .nav-hamburger-icon {
+  margin: 11px 0;
+}
+
 header nav[aria-expanded='false'] .nav-hamburger-icon::before {
-  top: -6px;
+  top: -7px;
 }
 
 header nav[aria-expanded='false'] .nav-hamburger-icon::after {
-  top: 6px;
+  top: 7px;
 }
 
 header nav[aria-expanded='true'] .nav-hamburger-icon {
@@ -128,163 +355,606 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
   transform: rotate(-45deg);
 }
 
-@media (width >= 900px) {
-  header nav .nav-hamburger {
-    display: none;
-    visibility: hidden;
-  }
+/* ---------- Search bar ---------- */
+
+header nav .nav-search {
+  grid-area: search;
+  display: flex;
+  align-items: center;
+  padding: 0 0 var(--spacing-s);
+  width: 100%;
 }
 
-/* brand */
-header .nav-brand {
-  grid-area: brand;
-  flex-basis: 128px;
-  font-size: var(--heading-font-size-s);
-  font-weight: 700;
-  line-height: 1;
+header nav .nav-search form,
+header nav .nav-search .nav-search-field {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
 }
 
-header nav .nav-brand img {
-  width: 128px;
-  height: auto;
+header nav .nav-search input {
+  width: 100%;
+  height: 40px;
+  border: 1px solid #e0e3ea;
+  border-radius: 4px;
+  padding: var(--spacing-xs) 40px var(--spacing-xs) 12px;
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-s);
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--color-navy);
+  background-color: var(--color-white);
+  outline: none;
+  appearance: none;
+  margin: 0;
+  min-height: auto;
 }
 
-/* sections */
-header nav .nav-sections {
-  grid-area: sections;
-  flex: 1 1 auto;
-  display: none;
-  visibility: hidden;
-}
-
-header nav[aria-expanded='true'] .nav-sections {
-  display: block;
-  visibility: visible;
-  align-self: start;
-}
-
-header nav .nav-sections ul {
-  list-style: none;
-  padding-left: 0;
+header nav .nav-search input::placeholder {
+  color: var(--color-gray);
   font-size: var(--body-font-size-s);
 }
 
-header nav .nav-sections ul > li {
-  font-weight: 500;
+header nav .nav-search input:focus {
+  border-color: var(--color-hover-ring);
+  box-shadow: 0 0 0 2px var(--color-hover-ring);
 }
 
-header nav .nav-sections ul > li > ul {
-  margin-top: 0;
+/* stylelint-disable-next-line no-descending-specificity */
+header nav .nav-search button {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 40px;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 0;
+  border-radius: 0 4px 4px 0;
+  padding: 0;
+  cursor: pointer;
+  color: var(--color-navy);
+  min-height: auto;
+  margin: 0;
 }
 
-header nav .nav-sections ul > li > ul > li {
-  font-weight: 400;
+header nav .nav-search button:hover,
+header nav .nav-search button:focus {
+  box-shadow: none;
+  background: none;
 }
 
-@media (width >= 900px) {
+/* stylelint-disable no-descending-specificity */
+header nav .nav-search button .icon-svg,
+header nav .nav-search button .icon {
+  width: 20px;
+  height: 20px;
+}
+
+header nav .nav-search button .icon-svg svg,
+header nav .nav-search button .icon img {
+  width: 20px;
+  height: 20px;
+}
+/* stylelint-enable no-descending-specificity */
+
+/* --------------------------------------------------------------------------
+   LAYER 3 — CATEGORY NAV (desktop bar) / FLYOUT (mobile + tablet)
+   -------------------------------------------------------------------------- */
+
+/* --- Default: hidden (mobile/tablet collapsed state) --- */
+
+header nav .nav-sections {
+  display: none;
+}
+
+/* ==========================================================================
+   MOBILE / TABLET FLYOUT (nav .nav-sections on small screens)
+   ========================================================================== */
+
+/* Overlay backdrop */
+header nav::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgb(0 0 0 / 40%);
+  z-index: 9;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 500ms cubic-bezier(0.33, 0, 0.25, 1);
+}
+
+header nav[aria-expanded='true']::before {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Flyout panel — always rendered on mobile, slid off-screen when closed */
+@media (width < 900px) {
   header nav .nav-sections {
-    display: block;
-    visibility: visible;
-    white-space: nowrap;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 85vw;
+    max-width: 400px;
+    height: 100vh;
+    height: 100dvh;
+    background-color: var(--color-white);
+    z-index: 10;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    transform: translateX(100%);
+    transition: transform 500ms cubic-bezier(0.33, 0, 0.25, 1);
+    padding: 0;
+    visibility: hidden;
   }
 
   header nav[aria-expanded='true'] .nav-sections {
-    align-self: unset;
+    transform: translateX(0);
+    visibility: visible;
+  }
+}
+
+/* Close button area at top of flyout */
+header nav[aria-expanded='true'] .nav-sections .nav-sections-close {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: var(--spacing-s) var(--spacing-m);
+  height: 56px;
+  flex-shrink: 0;
+}
+
+header nav[aria-expanded='true'] .nav-sections .nav-sections-close button {
+  background: none;
+  border: 0;
+  padding: 4px;
+  margin: 0;
+  min-height: auto;
+  cursor: pointer;
+  color: var(--color-navy);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+}
+
+header nav[aria-expanded='true'] .nav-sections .nav-sections-close button:hover,
+header nav[aria-expanded='true'] .nav-sections .nav-sections-close button:focus {
+  box-shadow: none;
+}
+
+/* Category list in flyout */
+header nav[aria-expanded='true'] .nav-sections .default-content-wrapper > ul {
+  padding: 0 var(--spacing-m);
+}
+
+header nav[aria-expanded='true'] .nav-sections .default-content-wrapper > ul > li {
+  border-bottom: 1px solid #e0e3ea;
+}
+
+header nav[aria-expanded='true'] .nav-sections .default-content-wrapper > ul > li > a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-s) 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-navy);
+  line-height: 1.4;
+}
+
+header nav[aria-expanded='true'] .nav-sections .default-content-wrapper > ul > li > a:hover {
+  text-decoration: underline;
+}
+
+/* Nested dropdown in flyout */
+header nav[aria-expanded='true'] .nav-sections .default-content-wrapper > ul > li > ul {
+  display: none;
+  padding: 0 0 var(--spacing-s);
+}
+
+header nav[aria-expanded='true'] .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] > ul {
+  display: block;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+header nav[aria-expanded='true'] .nav-sections .default-content-wrapper > ul > li > ul > li > a {
+  display: block;
+  padding: var(--spacing-xs) 0;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--color-navy);
+  line-height: 1.4;
+}
+
+header nav[aria-expanded='true'] .nav-sections .default-content-wrapper > ul > li > ul > li > a:hover {
+  text-decoration: underline;
+}
+
+/* Flyout chevron for expandable items */
+header nav[aria-expanded='true'] .nav-sections .nav-drop > a::after {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border: 2px solid var(--color-navy);
+  border-width: 2px 2px 0 0;
+  border-radius: 0 1px 0 0;
+  transform: rotate(135deg);
+  flex-shrink: 0;
+  margin-left: var(--spacing-xs);
+  transition: transform 0.2s;
+}
+
+header nav[aria-expanded='true'] .nav-sections .nav-drop[aria-expanded='true'] > a::after {
+  transform: rotate(315deg);
+}
+
+/* Utility links at bottom of flyout */
+header nav[aria-expanded='true'] .nav-sections .nav-sections-utilities {
+  margin-top: auto;
+  padding: var(--spacing-m);
+  border-top: 1px solid #e0e3ea;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+header nav[aria-expanded='true'] .nav-sections .nav-sections-utilities ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-s);
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+header nav[aria-expanded='true'] .nav-sections .nav-sections-utilities ul li a {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-navy);
+}
+
+header nav[aria-expanded='true'] .nav-sections .nav-sections-utilities ul li a .icon-svg,
+header nav[aria-expanded='true'] .nav-sections .nav-sections-utilities ul li a .icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   TABLET BREAKPOINT (>=600px)
+   ========================================================================== */
+
+@media (width >= 600px) {
+  header nav .nav-main-bar .nav-main-bar-inner {
+    gap: 0 var(--spacing-s);
   }
 
-  header nav .nav-sections .nav-drop {
-    position: relative;
-    padding-right: 16px;
-    cursor: pointer;
+  /* Show full wordmark logo on tablet */
+  header nav .nav-brand-icon {
+    display: none;
   }
 
-  header nav .nav-sections .nav-drop::after {
-    content: '';
-    display: inline-block;
-    position: absolute;
-    top: 2px;
-    right: 2px;
-    transform: rotate(135deg);
-    width: 6px;
-    height: 6px;
-    border: 2px solid currentcolor;
-    border-radius: 0 1px 0 0;
-    border-width: 2px 2px 0 0;
-  }
-
-  header nav .nav-sections .nav-drop[aria-expanded='true']::after {
-    top: unset;
-    bottom: 2px;
-    transform: rotate(315deg);
-  }
-
-  header nav .nav-sections ul {
+  header nav .nav-brand-logo {
     display: flex;
-    gap: 24px;
+    align-items: center;
+  }
+
+  header nav .nav-brand-logo svg,
+  header nav .nav-brand-logo img {
+    width: 160px;
+    height: auto;
+  }
+
+  /* Show Help icon on tablet */
+  header nav .nav-tools ul li.nav-tools-help {
+    display: flex;
+  }
+
+  /* Tools labels visible */
+  header nav .nav-tools ul li a {
+    font-size: 14px;
+  }
+
+  /* stylelint-disable-next-line no-descending-specificity */
+  header nav .nav-login a {
+    font-size: 14px;
+  }
+}
+
+/* ==========================================================================
+   DESKTOP BREAKPOINT (>=900px)
+   ========================================================================== */
+
+@media (width >= 900px) {
+  /* --- Main bar inner --- */
+  header nav .nav-main-bar .nav-main-bar-inner {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-m);
+    padding: 8px 32px;
+  }
+
+  /* Logo */
+  header nav .nav-brand-icon {
+    display: none;
+  }
+
+  header nav .nav-brand-logo {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  header nav .nav-brand-logo svg,
+  header nav .nav-brand-logo img {
+    width: 160px;
+    height: auto;
+  }
+
+  /* Search bar: fixed width, right-aligned before icons */
+  header nav .nav-search {
+    flex: 0 0 280px;
+    padding: 0;
+    max-width: 280px;
+    margin-left: auto;
+  }
+
+  /* Tools */
+  header nav .nav-tools {
+    gap: var(--spacing-m);
+  }
+
+  header nav .nav-tools ul {
+    gap: var(--spacing-m);
+  }
+
+  header nav .nav-tools ul li a {
+    font-size: 16px;
+    padding: 12px 8px 8px;
+  }
+
+  /* Show Help on desktop */
+  header nav .nav-tools ul li.nav-tools-help {
+    display: flex;
+  }
+
+  /* Login li: center the fixed-height button within the stretched li */
+  header nav .nav-tools ul li.nav-login {
+    align-items: center;
+  }
+
+  /* --- Login: filled button style on desktop --- */
+  /* stylelint-disable-next-line no-descending-specificity */
+  header nav .nav-tools ul li.nav-login a {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    border: 2px solid var(--color-white);
+    border-radius: 4px;
+    height: 40px;
+    padding: 4px 22px;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-navy);
+    background-color: var(--color-white);
+    transition: box-shadow 0.2s;
+    white-space: nowrap;
+  }
+
+  header nav .nav-tools ul li.nav-login a:hover {
+    box-shadow: 0 0 0 4px var(--color-hover-ring);
+    text-decoration: none;
+  }
+
+  header nav .nav-tools ul li.nav-login a:hover span:last-child {
+    text-decoration: none;
+  }
+
+  /* --- Hide hamburger on desktop --- */
+  header nav .nav-hamburger {
+    display: none;
+  }
+
+  /* --- Overlay off on desktop --- */
+  header nav::before {
+    display: none;
+  }
+
+  /* --------------------------------------------------------------------------
+     LAYER 3 — DESKTOP CATEGORY NAV BAR
+     -------------------------------------------------------------------------- */
+
+  header nav .nav-sections {
+    display: block;
+    background-color: var(--color-navy);
+    width: 100%;
+    position: relative;
+    transform: none;
+    height: 44px;
+    overflow: visible;
+  }
+
+  /* Reset flyout positioning for desktop (when expanded via mobile toggle) */
+  header nav[aria-expanded='true'] .nav-sections {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: 100%;
+    max-width: none;
+    height: 44px;
+    overflow: visible;
+    transform: none;
+    transition: none;
+    background-color: var(--color-navy);
+    flex-direction: row;
+  }
+
+  header nav .nav-sections .default-content-wrapper {
+    max-width: 1260px;
+    margin: 0 auto;
+    padding: 0 32px;
+    height: 44px;
+  }
+
+  header nav .nav-sections .default-content-wrapper > ul {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    height: 44px;
     margin: 0;
+    padding: 0;
   }
 
   header nav .nav-sections .default-content-wrapper > ul > li {
-    flex: 0 1 auto;
     position: relative;
+    height: 44px;
+    display: flex;
+    align-items: center;
   }
+
+  /* stylelint-disable-next-line no-descending-specificity */
+  header nav .nav-sections .default-content-wrapper > ul > li > a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 44px;
+    padding: 0 14px;
+    color: var(--color-white);
+    font-size: var(--body-font-size-s);
+    font-weight: 400;
+    line-height: 1;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s;
+  }
+
+  header nav .nav-sections .default-content-wrapper > ul > li > a:hover {
+    border-bottom-color: var(--color-white);
+    text-decoration: none;
+  }
+
+  /* Active dropdown item — white tab with navy text */
+  header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] {
+    background-color: var(--color-white);
+    border-radius: 4px 4px 0 0;
+  }
+
+  header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] > a {
+    color: var(--color-navy);
+    border-bottom-color: transparent;
+  }
+
+  /* Category item border reset in flyout context */
+  header nav[aria-expanded='true'] .nav-sections .default-content-wrapper > ul > li {
+    border-bottom: 0;
+  }
+
+  /* Chevron for dropdown items */
+  header nav .nav-sections .nav-drop > a::after {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border: 2px solid var(--color-white);
+    border-width: 2px 2px 0 0;
+    border-radius: 0 1px 0 0;
+    transform: rotate(135deg);
+    flex-shrink: 0;
+    transition: transform 0.2s, border-color 0.2s;
+    position: relative;
+    top: -1px;
+  }
+
+  header nav .nav-sections .nav-drop[aria-expanded='true'] > a::after {
+    transform: rotate(315deg);
+    top: 1px;
+    border-color: var(--color-navy);
+  }
+
+  /* Remove flyout chevron styles on desktop */
+  header nav[aria-expanded='true'] .nav-sections .nav-drop > a::after {
+    content: '';
+    border-color: var(--color-white);
+    margin-left: 0;
+  }
+
+  /* --- Desktop dropdown panels --- */
 
   header nav .nav-sections .default-content-wrapper > ul > li > ul {
     display: none;
-    position: relative;
   }
 
   header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] > ul {
     display: block;
     position: absolute;
-    left: -24px;
-    width: 200px;
-    top: 150%;
-    padding: 16px;
-    background-color: var(--light-color);
-    white-space: initial;
-    z-index: 1;
+    top: 100%;
+    left: 0;
+    min-width: 240px;
+    background-color: var(--color-white);
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 4px 16px rgb(0 0 0 / 12%);
+    padding: var(--spacing-s);
+    z-index: 3;
+    white-space: normal;
   }
 
-  header nav .nav-sections .default-content-wrapper > ul > li > ul::before {
-    content: '';
-    position: absolute;
-    top: -8px;
-    left: 16px;
-    width: 0;
-    height: 0;
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-bottom: 8px solid var(--light-color);
-  }
-
+  /* stylelint-disable-next-line no-descending-specificity */
   header nav .nav-sections .default-content-wrapper > ul > li > ul > li {
-    padding: 8px 0;
+    padding: 0;
+  }
+
+  /* stylelint-disable-next-line no-descending-specificity */
+  header nav .nav-sections .default-content-wrapper > ul > li > ul > li > a {
+    display: block;
+    padding: var(--spacing-xs) var(--spacing-xs);
+    color: var(--color-navy);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.4;
+    border-radius: 4px;
+  }
+
+  header nav .nav-sections .default-content-wrapper > ul > li > ul > li > a:hover {
+    background-color: var(--color-blue-light);
+    text-decoration: none;
+  }
+
+  /* --- Flyout utilities hidden on desktop --- */
+  header nav .nav-sections .nav-sections-utilities {
+    display: none;
+  }
+
+  header nav .nav-sections .nav-sections-close {
+    display: none;
   }
 }
 
-/* tools */
-header nav .nav-tools {
-  grid-area: tools;
-}
+/* ==========================================================================
+   BREADCRUMBS
+   ========================================================================== */
 
-header nav .nav-tools .button {
-  margin: 0;
-  border: none;
-  padding: 0.5em;
-  background: none;
-  line-height: 0;
-}
-
-/* breadcrumbs */
 header .breadcrumbs {
   display: none;
   margin: auto;
-  max-width: 1248px;
-  height: var(--breadcrumbs-height);
-  padding: 0 24px;
-  font-size: var(--body-font-size-xs);
+  max-width: 1260px;
+  height: 34px;
+  padding: 0 var(--spacing-m);
+  font-size: 14px;
   overflow: hidden;
+  background-color: var(--color-white);
+  align-items: center;
 }
 
 header .breadcrumbs ol {
@@ -292,15 +962,14 @@ header .breadcrumbs ol {
   flex-flow: wrap;
   list-style: none;
   padding: 0;
-  margin-top: 0;
-  margin-bottom: 0;
+  margin: 0;
   gap: 1ch;
 }
 
 /* stylelint-disable-next-line no-descending-specificity */
 header .breadcrumbs ol li {
   padding: 0;
-  color: var(--dark-color);
+  color: var(--color-gray);
 }
 
 header .breadcrumbs ol li:not(:last-child)::after {
@@ -310,13 +979,54 @@ header .breadcrumbs ol li:not(:last-child)::after {
 
 /* stylelint-disable-next-line no-descending-specificity */
 header .breadcrumbs ol li[aria-current] {
-  color: var(--text-color);
+  color: var(--color-navy);
 }
 
 @media (width >= 900px) {
   header .breadcrumbs {
-    display: block;
-    max-width: 1264px;
+    display: flex;
+    max-width: 1260px;
     padding: 0 32px;
   }
 }
+
+/* ==========================================================================
+   BODY SCROLL LOCK WHEN MOBILE MENU IS OPEN
+   ========================================================================== */
+
+body.nav-open {
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   FOCUS VISIBILITY — accessibility
+   ========================================================================== */
+
+/* stylelint-disable no-descending-specificity */
+header nav a:focus-visible,
+header nav button:focus-visible {
+  outline: 2px solid var(--color-hover-ring);
+  outline-offset: 2px;
+}
+/* stylelint-enable no-descending-specificity */
+
+/* ==========================================================================
+   ICON HELPERS
+   ========================================================================== */
+
+/* stylelint-disable no-descending-specificity */
+header nav .icon,
+header nav .icon-svg {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+/* stylelint-enable no-descending-specificity */
+
+/* stylelint-disable no-descending-specificity */
+header nav .icon svg,
+header nav .icon img,
+header nav .icon-svg svg {
+  fill: currentcolor;
+}
+/* stylelint-enable no-descending-specificity */

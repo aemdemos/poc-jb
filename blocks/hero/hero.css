@@ -8,6 +8,7 @@
 .hero-container .hero-wrapper {
   max-width: unset;
   padding: 0;
+  background-color: var(--color-navy);
 }
 
 /* Hero block - dark navy background */
@@ -187,6 +188,8 @@
     padding: var(--spacing-xl) 90px;
     min-height: 420px;
     gap: 0 var(--spacing-l);
+    max-width: 1260px;
+    margin: 0 auto;
   }
 
   /* Badge moves to right column, top row */

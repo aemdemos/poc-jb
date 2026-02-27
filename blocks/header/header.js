@@ -233,6 +233,14 @@ function buildMenuButton() {
  * @param {Element} navTools The nav-tools element
  */
 function prepareNavSections(navSections, navTools) {
+  // Unwrap <p> tags around top-level category links so li > a selectors work
+  navSections.querySelectorAll(':scope .default-content-wrapper > ul > li > p').forEach((p) => {
+    const a = p.querySelector('a');
+    if (a && p.childNodes.length === 1) {
+      p.replaceWith(a);
+    }
+  });
+
   // Add close button at the top of nav-sections
   const closeContainer = document.createElement('div');
   closeContainer.className = 'nav-sections-close';

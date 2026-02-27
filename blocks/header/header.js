@@ -350,7 +350,7 @@ function setupFlyoutAccordions(navSections) {
 export default async function decorate(block) {
   // Load nav fragment
   const navMeta = getMetadata('nav');
-  const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/content/nav';
+  const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
   const fragment = await loadFragment(navPath);
 
   // Clear the block and build nav structure

@@ -28,7 +28,7 @@
   --dark-color: var(--color-navy);
   --text-color: var(--color-navy-dark);
   --link-color: var(--color-navy);
-  --link-hover-color: var(--color-navy);
+  --link-hover-color: #0059ff;
   --overlay-background-color: var(--color-blue-light);
 
   /* fonts */
@@ -202,6 +202,7 @@ a:any-link {
 }
 
 a:hover {
+  color: var(--link-hover-color);
   text-decoration: underline;
 }
 
@@ -239,6 +240,7 @@ a.button:focus,
 button:hover,
 button:focus {
   box-shadow: 0 0 0 4px var(--color-hover-ring);
+  color: var(--color-white);
   text-decoration: none;
 }
 
@@ -264,6 +266,7 @@ a.button.secondary:focus,
 button.secondary:hover,
 button.secondary:focus {
   box-shadow: 0 0 0 4px var(--color-hover-ring);
+  color: var(--color-navy);
 }
 
 /* images */
@@ -290,7 +293,7 @@ main > .section {
 }
 
 main > .section > div {
-  max-width: 1200px;
+  max-width: 1260px;
   margin: auto;
   padding: 0 var(--spacing-m);
 }
@@ -334,8 +337,13 @@ main .section.dark a:any-link {
   color: var(--color-white);
 }
 
+main .section.dark a:hover {
+  color: #759eff;
+}
+
 /* dark section: primary button inverts to white filled */
 main .section.dark a.button:any-link,
+main .section.dark a.button:hover,
 main .section.dark button {
   background-color: var(--color-white);
   color: var(--color-navy);

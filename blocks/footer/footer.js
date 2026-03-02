@@ -25,7 +25,7 @@ function isExternalLink(link) {
  */
 function decorateExternalLinks(container) {
   container.querySelectorAll('a[href]').forEach((link) => {
-    if (link.closest('.footer-app-badges') || link.closest('.footer-social')) return;
+    if (link.closest('.footer-app-badges') || link.closest('.footer-social') || link.closest('.footer-nav')) return;
     if (isExternalLink(link)) {
       link.setAttribute('target', '_blank');
       link.setAttribute('rel', 'noopener noreferrer');
@@ -117,7 +117,7 @@ function buildNavSection(section) {
     button.className = 'footer-nav-toggle';
     button.setAttribute('aria-expanded', 'false');
     button.setAttribute('aria-controls', `footer-panel-${id}`);
-    button.innerHTML = `<span>${h2.textContent.trim()}</span><img src="/icons/chevron-down.svg" class="footer-chevron" alt="" loading="lazy" width="16" height="16">`;
+    button.innerHTML = `<svg class="footer-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg><span>${h2.textContent.trim()}</span>`;
 
     // Content panel
     const panel = document.createElement('div');
@@ -266,18 +266,30 @@ export default async function decorate(block) {
     footerWrapper.append(buildBottomSection(sections[4]));
   }
 
-  // Move social icons into the bottom bar (text left, social right)
+  // Wrap bottom bar text content for desktop grid layout
   const bottomDiv = footerWrapper.querySelector('.footer-bottom');
-  const socialDiv = footerWrapper.querySelector('.footer-social');
-  if (bottomDiv && socialDiv) {
+  if (bottomDiv) {
     const bottomText = document.createElement('div');
     bottomText.className = 'footer-bottom-text';
     while (bottomDiv.firstChild) {
       bottomText.append(bottomDiv.firstChild);
     }
     bottomDiv.append(bottomText);
-    bottomDiv.append(socialDiv);
   }
+
+  // Move social icons: inside bottom bar on desktop, between nav and legal on mobile
+  const socialDiv = footerWrapper.querySelector('.footer-social');
+  const legalDiv = footerWrapper.querySelector('.footer-legal');
+  function placeSocial() {
+    if (!socialDiv || !bottomDiv) return;
+    if (DESKTOP_MQ.matches) {
+      bottomDiv.append(socialDiv);
+    } else if (legalDiv) {
+      footerWrapper.insertBefore(socialDiv, legalDiv);
+    }
+  }
+  placeSocial();
+  DESKTOP_MQ.addEventListener('change', placeSocial);
 
   // Decorate external links (skips app badges and social links)
   decorateExternalLinks(footerWrapper);

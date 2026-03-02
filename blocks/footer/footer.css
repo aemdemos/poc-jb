@@ -111,8 +111,9 @@ footer a:hover {
 /* Accordion toggle — visible on mobile/tablet */
 .footer-nav-toggle {
   display: flex;
+  justify-content: flex-start;
   align-items: center;
-  justify-content: space-between;
+  gap: 12px;
   width: 100%;
   padding: 16px 0;
   margin: 0;
@@ -130,10 +131,22 @@ footer a:hover {
   min-height: unset;
 }
 
+.footer-nav-toggle[aria-expanded="true"] {
+  color: #759eff;
+  box-shadow: 0 0 0 3px #759eff;
+  border-radius: 4px;
+  padding: 12px;
+}
+
 .footer-nav-toggle:hover,
 .footer-nav-toggle:focus {
   box-shadow: none;
   background: none;
+}
+
+.footer-nav-toggle[aria-expanded="true"]:hover,
+.footer-nav-toggle[aria-expanded="true"]:focus {
+  box-shadow: 0 0 0 3px #759eff;
 }
 
 .footer-chevron {
@@ -141,7 +154,6 @@ footer a:hover {
   height: 20px;
   flex-shrink: 0;
   transition: transform 0.3s ease;
-  filter: invert(1);
 }
 
 .footer-nav-toggle[aria-expanded="true"] .footer-chevron {
@@ -153,6 +165,7 @@ footer a:hover {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.3s ease;
+  padding-left: 32px;
 }
 
 .footer-nav-panel.is-open {
@@ -199,14 +212,12 @@ footer a:hover {
   filter: invert(0.7);
 }
 
-/* Last column bottom border on mobile */
-.footer-nav-column:last-child .footer-nav-toggle {
-  border-bottom: 1px solid var(--footer-separator-color);
-}
 
 /* === Social Links === */
 .footer-social {
-  padding: 24px 0 0;
+  border-top: 1px solid var(--footer-separator-color);
+  margin-top: 0;
+  padding: 36px 0;
 }
 
 .footer-social-list {
@@ -254,9 +265,8 @@ footer .footer-social-list li {
 
 /* === Legal Section === */
 .footer-legal {
-  border-top: 1px solid var(--footer-separator-color);
-  margin-top: 32px;
-  padding-top: 32px;
+  margin-top: 24px;
+  padding-top: 0;
 }
 
 .footer-legal p {
@@ -340,6 +350,7 @@ footer .footer-bottom-text p {
   .footer-nav-panel {
     max-height: none;
     overflow: visible;
+    padding-left: 0;
   }
 
   .footer-nav-panel ul {
@@ -347,13 +358,10 @@ footer .footer-bottom-text p {
     margin: 0;
   }
 
-  /* Column borders removed on desktop */
-  .footer-nav-column:last-child .footer-nav-toggle {
-    border-bottom: none;
-  }
-
   /* Social — inside bottom bar on desktop, aligned with 4th nav column */
   .footer-social {
+    border-top: none;
+    margin-top: 0;
     padding: 0;
     grid-column: 4;
   }
@@ -364,6 +372,7 @@ footer .footer-bottom-text p {
 
   /* Legal */
   .footer-legal {
+    border-top: 1px solid var(--footer-separator-color);
     margin-top: 0;
     padding-top: 32px;
   }

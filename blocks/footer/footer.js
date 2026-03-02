@@ -221,6 +221,50 @@ function resetAccordionOnDesktop(nav) {
 }
 
 /**
+ * Normalize icon class names to lowercase.
+ * DA may capitalize icon names (e.g. icon-Facebook instead of icon-facebook).
+ * Also handles DA renaming x-twitter to just X.
+ * @param {HTMLElement} container
+ */
+function normalizeIconNames(container) {
+  const iconNameMap = { x: 'x-twitter' };
+  container.querySelectorAll('span.icon').forEach((span) => {
+    const classes = [...span.classList];
+    classes.forEach((cls) => {
+      if (cls.startsWith('icon-') && cls !== 'icon') {
+        const raw = cls.substring(5);
+        const lower = raw.toLowerCase();
+        const mapped = iconNameMap[lower] || lower;
+        if (mapped !== raw) {
+          span.classList.remove(cls);
+          span.classList.add(`icon-${mapped}`);
+        }
+      }
+    });
+  });
+}
+
+/**
+ * Fix broken images whose src was set to about:error by DA processing.
+ * Maps images by alt text to known fallback paths in the repo.
+ * @param {HTMLElement} container
+ */
+function fixBrokenImages(container) {
+  const fallbacks = {
+    nationwide: '/images/nbs-logo.svg',
+    'link to apple store to download app': '/images/appstore.svg',
+    'link to google play to download app': '/images/googleplay.svg',
+  };
+  container.querySelectorAll('img').forEach((img) => {
+    if (!img.src || img.src === 'about:error' || img.src.endsWith('/about:error')) {
+      const alt = (img.alt || '').toLowerCase();
+      const fallback = fallbacks[alt];
+      if (fallback) img.src = fallback;
+    }
+  });
+}
+
+/**
  * Loads and decorates the footer.
  * @param {Element} block The footer block element
  */
@@ -228,6 +272,10 @@ export default async function decorate(block) {
   const footerMeta = getMetadata('footer');
   const footerPath = footerMeta ? new URL(footerMeta, window.location).pathname : '/footer';
   const fragment = await loadFragment(footerPath);
+
+  // Fix DA content processing artifacts
+  normalizeIconNames(fragment);
+  fixBrokenImages(fragment);
 
   block.textContent = '';
   const footerWrapper = document.createElement('div');

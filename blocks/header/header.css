@@ -101,6 +101,7 @@ header nav .nav-context a.nav-context-active {
 @media (width >= 900px) {
   header nav .nav-context p {
     padding: 0 32px;
+    box-sizing: content-box;
   }
 
   header nav .nav-context a {
@@ -683,6 +684,7 @@ header nav[aria-expanded='true'] .nav-sections .nav-sections-utilities ul li a .
     align-items: center;
     gap: var(--spacing-m);
     padding: 8px 32px;
+    box-sizing: content-box;
   }
 
   /* Logo */
@@ -806,6 +808,7 @@ header nav[aria-expanded='true'] .nav-sections .nav-sections-utilities ul li a .
     margin: 0 auto;
     padding: 0 32px;
     height: 44px;
+    box-sizing: content-box;
   }
 
   header nav .nav-sections .default-content-wrapper > ul {
@@ -987,6 +990,7 @@ header .breadcrumbs ol li[aria-current] {
     display: flex;
     max-width: 1260px;
     padding: 0 32px;
+    box-sizing: content-box;
   }
 }
 

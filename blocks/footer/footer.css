@@ -115,7 +115,7 @@ footer a:hover {
   align-items: center;
   gap: 12px;
   width: 100%;
-  padding: 16px 0;
+  padding: 16px 12px;
   margin: 0;
   border: none;
   border-top: 1px solid var(--footer-separator-color);
@@ -165,7 +165,7 @@ footer a:hover {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.3s ease;
-  padding-left: 32px;
+  padding-left: 44px;
 }
 
 .footer-nav-panel.is-open {
@@ -265,7 +265,7 @@ footer .footer-social-list li {
 
 /* === Legal Section === */
 .footer-legal {
-  margin-top: 24px;
+  margin-top: 0;
   padding-top: 0;
 }
 

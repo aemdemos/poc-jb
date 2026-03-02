@@ -1,4 +1,4 @@
-import { getMetadata } from '../../scripts/aem.js';
+import { getMetadata, decorateIcons } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 
 const DESKTOP_MQ = window.matchMedia('(min-width: 900px)');
@@ -149,6 +149,7 @@ function buildNavSection(section) {
 
 /**
  * Build the social links section.
+ * DA may strip icon spans entirely, so we inject them from link text/URL when missing.
  * @param {HTMLElement} section - The social links fragment section
  * @returns {HTMLElement}
  */
@@ -156,22 +157,52 @@ function buildSocialSection(section) {
   const social = document.createElement('div');
   social.className = 'footer-social';
 
+  // Map link text (lowercase) to icon name for cases where DA strips icon spans
+  const socialIconMap = {
+    facebook: 'facebook',
+    linkedin: 'linkedin',
+    x: 'x-twitter',
+    youtube: 'youtube',
+    instagram: 'instagram',
+  };
+
+  let injectedIcons = false;
   const ul = section.querySelector('ul');
   if (ul) {
     ul.className = 'footer-social-list';
     ul.querySelectorAll('a').forEach((link) => {
       link.setAttribute('target', '_blank');
       link.setAttribute('rel', 'noopener noreferrer');
-      // Capture label before clearing text
       const label = link.textContent.trim();
-      const icon = link.querySelector('.icon');
+      let icon = link.querySelector('.icon');
+
+      // If DA stripped the icon span, create one from the link text
+      if (!icon && label) {
+        const iconName = socialIconMap[label.toLowerCase()];
+        if (iconName) {
+          icon = document.createElement('span');
+          icon.className = `icon icon-${iconName}`;
+          injectedIcons = true;
+        }
+      }
+
       if (icon) {
         link.textContent = '';
         link.append(icon);
-        if (label) link.setAttribute('aria-label', label);
+        if (label) {
+          link.setAttribute('title', label);
+          link.setAttribute('aria-label', label);
+        }
       }
     });
     social.append(ul);
+  }
+
+  // Only call decorateIcons for freshly injected spans; existing ones are
+  // already decorated by loadFragment → decorateMain and calling again
+  // would duplicate the <img> inside each span.
+  if (injectedIcons) {
+    decorateIcons(social);
   }
 
   return social;

@@ -1,4 +1,4 @@
-import { getMetadata } from '../../scripts/aem.js';
+import { getMetadata, decorateIcons } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 
 const DESKTOP_MQ = window.matchMedia('(min-width: 900px)');
@@ -149,6 +149,7 @@ function buildNavSection(section) {
 
 /**
  * Build the social links section.
+ * DA may strip icon spans entirely, so we inject them from link text/URL when missing.
  * @param {HTMLElement} section - The social links fragment section
  * @returns {HTMLElement}
  */
@@ -156,22 +157,52 @@ function buildSocialSection(section) {
   const social = document.createElement('div');
   social.className = 'footer-social';
 
+  // Map link text (lowercase) to icon name for cases where DA strips icon spans
+  const socialIconMap = {
+    facebook: 'facebook',
+    linkedin: 'linkedin',
+    x: 'x-twitter',
+    youtube: 'youtube',
+    instagram: 'instagram',
+  };
+
+  let injectedIcons = false;
   const ul = section.querySelector('ul');
   if (ul) {
     ul.className = 'footer-social-list';
     ul.querySelectorAll('a').forEach((link) => {
       link.setAttribute('target', '_blank');
       link.setAttribute('rel', 'noopener noreferrer');
-      // Capture label before clearing text
       const label = link.textContent.trim();
-      const icon = link.querySelector('.icon');
+      let icon = link.querySelector('.icon');
+
+      // If DA stripped the icon span, create one from the link text
+      if (!icon && label) {
+        const iconName = socialIconMap[label.toLowerCase()];
+        if (iconName) {
+          icon = document.createElement('span');
+          icon.className = `icon icon-${iconName}`;
+          injectedIcons = true;
+        }
+      }
+
       if (icon) {
         link.textContent = '';
         link.append(icon);
-        if (label) link.setAttribute('aria-label', label);
+        if (label) {
+          link.setAttribute('title', label);
+          link.setAttribute('aria-label', label);
+        }
       }
     });
     social.append(ul);
+  }
+
+  // Only call decorateIcons for freshly injected spans; existing ones are
+  // already decorated by loadFragment → decorateMain and calling again
+  // would duplicate the <img> inside each span.
+  if (injectedIcons) {
+    decorateIcons(social);
   }
 
   return social;
@@ -221,6 +252,50 @@ function resetAccordionOnDesktop(nav) {
 }
 
 /**
+ * Normalize icon class names to lowercase.
+ * DA may capitalize icon names (e.g. icon-Facebook instead of icon-facebook).
+ * Also handles DA renaming x-twitter to just X.
+ * @param {HTMLElement} container
+ */
+function normalizeIconNames(container) {
+  const iconNameMap = { x: 'x-twitter' };
+  container.querySelectorAll('span.icon').forEach((span) => {
+    const classes = [...span.classList];
+    classes.forEach((cls) => {
+      if (cls.startsWith('icon-') && cls !== 'icon') {
+        const raw = cls.substring(5);
+        const lower = raw.toLowerCase();
+        const mapped = iconNameMap[lower] || lower;
+        if (mapped !== raw) {
+          span.classList.remove(cls);
+          span.classList.add(`icon-${mapped}`);
+        }
+      }
+    });
+  });
+}
+
+/**
+ * Fix broken images whose src was set to about:error by DA processing.
+ * Maps images by alt text to known fallback paths in the repo.
+ * @param {HTMLElement} container
+ */
+function fixBrokenImages(container) {
+  const fallbacks = {
+    nationwide: '/images/nbs-logo.svg',
+    'link to apple store to download app': '/images/appstore.svg',
+    'link to google play to download app': '/images/googleplay.svg',
+  };
+  container.querySelectorAll('img').forEach((img) => {
+    if (!img.src || img.src === 'about:error' || img.src.endsWith('/about:error')) {
+      const alt = (img.alt || '').toLowerCase();
+      const fallback = fallbacks[alt];
+      if (fallback) img.src = fallback;
+    }
+  });
+}
+
+/**
  * Loads and decorates the footer.
  * @param {Element} block The footer block element
  */
@@ -228,6 +303,10 @@ export default async function decorate(block) {
   const footerMeta = getMetadata('footer');
   const footerPath = footerMeta ? new URL(footerMeta, window.location).pathname : '/footer';
   const fragment = await loadFragment(footerPath);
+
+  // Fix DA content processing artifacts
+  normalizeIconNames(fragment);
+  fixBrokenImages(fragment);
 
   block.textContent = '';
   const footerWrapper = document.createElement('div');

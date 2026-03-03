@@ -10,9 +10,9 @@
 
 .cards > ul > li {
   background-color: var(--background-color);
-  border-radius: 8px;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgb(0 0 0 / 8%);
+  box-shadow: rgb(128 131 142 / 50%) 0 1px 2px 1px;
 }
 
 .cards .cards-card-image {
@@ -21,23 +21,49 @@
 
 .cards > ul > li img {
   width: 100%;
-  aspect-ratio: 16 / 9;
+  height: auto;
   object-fit: cover;
 }
 
 .cards .cards-card-body {
-  padding: var(--spacing-m);
+  padding: var(--spacing-s);
 }
 
 .cards .cards-card-body p:first-child strong {
-  font-size: var(--heading-font-size-s);
+  font-size: var(--heading-font-size-m);
+  font-weight: 500;
   display: block;
   margin-bottom: var(--spacing-xs);
 }
 
 .cards .cards-card-body p {
   font-size: var(--body-font-size-s);
+  color: var(--color-gray);
   margin: var(--spacing-xs) 0;
+  line-height: 1.4;
+}
+
+/* CTA link - override button style to text link */
+.cards .cards-card-body p:last-child a.button {
+  background: transparent;
+  border: 0;
+  color: var(--color-navy);
+  font-size: var(--body-font-size-s);
+  font-weight: 500;
+  padding: 0;
+  margin: var(--spacing-s) 0 0;
+  min-height: unset;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  white-space: normal;
+  display: inline;
+}
+
+.cards .cards-card-body p:last-child a.button:hover,
+.cards .cards-card-body p:last-child a.button:focus {
+  box-shadow: none;
+  text-decoration: underline;
+  color: var(--link-hover-color);
 }
 
 .cards .cards-card-body a:any-link:not(.button) {
@@ -50,29 +76,42 @@
   .cards > ul {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .cards .cards-card-body {
+    padding: var(--spacing-m);
+  }
+
+  .cards .cards-card-body p:first-child strong {
+    font-size: var(--heading-font-size-l);
+  }
+
+  .cards .cards-card-body p {
+    font-size: var(--body-font-size-m);
+  }
+
+  .cards .cards-card-body p:last-child a.button {
+    font-size: var(--body-font-size-m);
+  }
 }
 
 /* ========================================
    Icon Nav variant - horizontal icon links
    ======================================== */
 .cards.icon-nav > ul {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--spacing-s);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-m) var(--spacing-l);
 }
 
 .cards.icon-nav > ul > li {
   background: transparent;
-  border-radius: 8px;
-  border: 2px solid #dde1ea;
+  border-radius: 0;
+  border: 0;
   box-shadow: none;
   text-align: center;
-  padding: var(--spacing-s);
-  transition: border-color 0.2s;
-}
-
-.cards.icon-nav > ul > li:hover {
-  border-color: var(--color-navy);
+  padding: 0 var(--spacing-xs);
+  width: calc(50% - var(--spacing-l));
 }
 
 .cards.icon-nav .cards-card-image {
@@ -82,8 +121,8 @@
 }
 
 .cards.icon-nav > ul > li img {
-  width: 48px;
-  height: 48px;
+  width: 60px;
+  height: 60px;
   aspect-ratio: 1;
   object-fit: contain;
 }
@@ -94,12 +133,13 @@
 
 .cards.icon-nav .cards-card-body p {
   margin: 0;
-  font-size: var(--body-font-size-xs);
+  font-size: var(--body-font-size-s);
+  color: var(--color-navy);
 }
 
 .cards.icon-nav .cards-card-body p:first-child strong {
-  font-size: var(--body-font-size-xs);
-  font-weight: 700;
+  font-size: var(--body-font-size-s);
+  font-weight: 500;
   margin-bottom: 0;
 }
 
@@ -109,36 +149,41 @@
 }
 
 /* Make the whole card clickable via the link */
-.cards.icon-nav .cards-card-body a.button {
+.cards.icon-nav .cards-card-body p:last-child a.button {
   background: transparent;
   color: var(--color-navy);
   padding: 0;
   margin: 0;
-  font-size: var(--body-font-size-xs);
-  font-weight: 700;
+  font-size: var(--body-font-size-s);
+  font-weight: 500;
   min-height: unset;
   text-decoration: underline;
+  text-underline-offset: 4px;
   white-space: normal;
 }
 
-.cards.icon-nav .cards-card-body a.button:hover {
+.cards.icon-nav .cards-card-body p:last-child a.button:hover {
   box-shadow: none;
   text-decoration: underline;
+  color: var(--link-hover-color);
 }
 
 @media (width >= 600px) {
-  .cards.icon-nav > ul {
-    grid-template-columns: repeat(4, 1fr);
+  .cards.icon-nav > ul > li {
+    width: auto;
+    min-width: 120px;
   }
 }
 
 @media (width >= 900px) {
-  .cards.icon-nav > ul {
-    grid-template-columns: repeat(7, 1fr);
+  .cards.icon-nav > ul > li img {
+    width: 68px;
+    height: 68px;
   }
 
-  .cards.icon-nav > ul > li img {
-    width: 56px;
-    height: 56px;
+  .cards.icon-nav .cards-card-body p,
+  .cards.icon-nav .cards-card-body p:first-child strong,
+  .cards.icon-nav .cards-card-body p a.button {
+    font-size: var(--body-font-size-m);
   }
 }

@@ -176,8 +176,11 @@ export default function parse(element, { document }) {
     });
   }
 
+  // Determine block name based on pattern
+  const blockName = isIconCards ? 'Cards (icon-nav)' : 'Cards';
+
   // Create block using WebImporter utility
-  const block = WebImporter.Blocks.createBlock(document, { name: 'Cards', cells });
+  const block = WebImporter.Blocks.createBlock(document, { name: blockName, cells });
 
   // Replace original element with structured block table
   element.replaceWith(block);

@@ -19,12 +19,12 @@
 
 .columns > div > .columns-img-col img {
   display: block;
-  border-radius: 8px;
 }
 
 /* Text columns styling */
 .columns > div > div:not(.columns-img-col) h2 {
   margin-top: 0;
+  font-weight: 500;
 }
 
 .columns > div > div:not(.columns-img-col) h3 {
@@ -65,7 +65,86 @@
   }
 }
 
-/* Dark section columns adjustments */
+/* ========================================
+   Boxed variant - per-column backgrounds
+   (e.g., Internet Banking + Search for Help)
+   ======================================== */
+.columns.boxed > div {
+  gap: var(--spacing-m);
+}
+
+.columns.boxed > div > div {
+  background-color: var(--color-blue-light);
+  border-radius: 16px;
+  padding: var(--spacing-m);
+}
+
+/* Second column gets gray background */
+.columns.boxed > div > div:nth-child(2) {
+  background-color: #ebebed;
+}
+
+.columns.boxed > div > div h2 {
+  margin-top: 0;
+  font-size: var(--heading-font-size-m);
+  font-weight: 700;
+}
+
+.columns.boxed > div > div p {
+  font-size: var(--body-font-size-s);
+}
+
+.columns.boxed .button-container a.button {
+  font-size: var(--body-font-size-s);
+}
+
+/* Links in boxed columns (e.g., search links) */
+.columns.boxed a:any-link:not(.button) {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+@media (width >= 900px) {
+  .columns.boxed > div {
+    gap: var(--spacing-l);
+  }
+
+  .columns.boxed > div > div {
+    padding: 32px;
+  }
+}
+
+/* ========================================
+   Text-link variant - links as plain text,
+   not buttons (e.g., service quality)
+   ======================================== */
+.columns .button-container a.button.text-link,
+.columns.text-links .button-container a.button {
+  background: transparent;
+  border: 0;
+  color: var(--color-navy);
+  font-size: var(--body-font-size-s);
+  font-weight: 500;
+  padding: 0;
+  margin: var(--spacing-xs) 0 0;
+  min-height: unset;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  white-space: normal;
+  display: inline;
+}
+
+.columns.text-links .button-container a.button:hover,
+.columns.text-links .button-container a.button:focus {
+  box-shadow: none;
+  text-decoration: underline;
+  color: var(--link-hover-color);
+}
+
+/* ========================================
+   Dark section columns (e.g., Call Checker)
+   ======================================== */
+/* stylelint-disable no-descending-specificity */
 .dark .columns > div > div h2,
 .dark .columns > div > div h3 {
   color: var(--color-white);
@@ -74,14 +153,83 @@
 .dark .columns p,
 .dark .columns li {
   color: var(--color-white);
+  font-size: var(--body-font-size-s);
 }
 
 .dark .columns a.button:any-link {
+  background-color: transparent;
+  color: var(--color-white);
+  border: 2px solid var(--color-white);
+}
+
+.dark .columns a.button:hover,
+.dark .columns a.button:focus {
   background-color: var(--color-white);
   color: var(--color-navy);
-  border-color: transparent;
 }
 
 .dark .columns a:any-link:not(.button) {
   color: var(--color-white);
 }
+
+/* Dark section: checkmark list bullets (green fill, white border, white check) */
+.dark .columns ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.dark .columns li {
+  padding-left: 32px;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' height='24' width='24'%3E%3Ccircle cx='12' cy='12' r='10' fill='%23308d4c' stroke='white' stroke-width='1.5'/%3E%3Cpath d='M10.6 13.8l-2.15-2.15a.948.948 0 0 0-.7-.275.948.948 0 0 0-.7.275.948.948 0 0 0-.275.7c0 .284.092.517.275.7L9.9 15.9c.2.2.433.3.7.3.267 0 .5-.1.7-.3l5.65-5.65a.948.948 0 0 0 .275-.7.948.948 0 0 0-.275-.7.948.948 0 0 0-.7-.275.948.948 0 0 0-.7.275L10.6 13.8Z' fill='white'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: left 2px;
+  background-size: 24px 24px;
+}
+
+/* Dark section mobile: text above image, full-width button */
+.dark .columns > div > div:not(.columns-img-col) {
+  order: 0;
+}
+
+.dark .columns > div > .columns-img-col {
+  order: 1;
+}
+
+.dark .columns .button-container a.button {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+/* Dark section: tablet+ font-size (20px) and auto-width button */
+@media (width >= 768px) {
+  .dark .columns p,
+  .dark .columns li,
+  .dark .columns .button-container a.button {
+    font-size: var(--body-font-size-m);
+  }
+
+  .dark .columns .button-container a.button {
+    display: inline-block;
+    width: auto;
+  }
+}
+
+/* Dark section: side-by-side from tablet (768px) */
+@media (width >= 768px) {
+  .dark .columns > div {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .dark .columns > div > div {
+    flex: 1;
+    order: unset;
+  }
+}
+
+/* Dark section: remove border-radius on images */
+.dark .columns > div > .columns-img-col img {
+  border-radius: 0;
+}
+/* stylelint-enable no-descending-specificity */

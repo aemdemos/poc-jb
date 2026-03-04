@@ -24,7 +24,6 @@
 /* Text columns styling */
 .columns > div > div:not(.columns-img-col) h2 {
   margin-top: 0;
-  font-weight: 500;
 }
 
 .columns > div > div:not(.columns-img-col) h3 {
@@ -88,7 +87,6 @@
 .columns.boxed > div > div h2 {
   margin-top: 0;
   margin-bottom: 0;
-  font-weight: 500;
 }
 
 /* Boxed: tighter vertical rhythm matching source */
@@ -220,13 +218,12 @@
   background: transparent;
   border: 0;
   color: var(--color-navy);
-  font-size: var(--body-font-size-s);
+  font-size: var(--body-font-size-m);
   font-weight: 500;
   padding: 0;
   margin: var(--spacing-xs) 0 0;
   min-height: unset;
-  text-decoration: underline;
-  text-underline-offset: 4px;
+  text-decoration: none;
   white-space: normal;
   display: inline;
 }
@@ -235,7 +232,31 @@
 .columns.text-links .button-container a.button:focus {
   box-shadow: none;
   text-decoration: underline;
+  text-underline-offset: 4px;
   color: var(--link-hover-color);
+}
+
+/* Text-links: center links on mobile only */
+.columns.text-links .button-container {
+  text-align: center;
+}
+
+/* Text-links: side-by-side from tablet (768px) */
+@media (width >= 768px) {
+  .columns.text-links > div {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--spacing-l);
+  }
+
+  .columns.text-links > div > div {
+    flex: 1;
+    order: unset;
+  }
+
+  .columns.text-links .button-container {
+    text-align: left;
+  }
 }
 
 /* ========================================

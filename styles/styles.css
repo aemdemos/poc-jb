@@ -26,7 +26,7 @@
   --background-color: var(--color-white);
   --light-color: var(--color-blue-light);
   --dark-color: var(--color-navy);
-  --text-color: var(--color-navy-dark);
+  --text-color: var(--color-gray);
   --link-color: var(--color-navy);
   --link-hover-color: #0059ff;
   --overlay-background-color: var(--color-blue-light);
@@ -146,10 +146,10 @@ h6 {
   margin-top: 0.8em;
   margin-bottom: 0.25em;
   font-family: var(--heading-font-family);
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1.2;
   scroll-margin: 40px;
-  color: var(--color-navy);
+  color: var(--color-navy-dark);
 }
 
 h1 { font-size: var(--heading-font-size-xxl); }
@@ -356,6 +356,43 @@ main .section.dark button.secondary {
   background-color: transparent;
   border-color: var(--color-white);
   color: var(--color-white);
+}
+
+/* ISQ section - 66.67% max-width on desktop, left-justified */
+@media (width >= 900px) {
+  main .section.isq .default-content-wrapper {
+    max-width: 66.67%;
+  }
+}
+
+/* FCA section - bottom border separator (on inner container to match content width) */
+main .section.fca {
+  margin: var(--spacing-m) 0;
+}
+
+main .section.fca > div {
+  padding-bottom: var(--spacing-l);
+  border-bottom: 1px solid #e6e6e8;
+}
+
+/* Footnote/disclaimer sections */
+main .section.footnote {
+  margin: var(--spacing-s) 0;
+}
+
+main .section.footnote p {
+  font-size: var(--body-font-size-xs);
+}
+
+/* Mobile font size adjustment (source uses 18px body text below 768px) */
+@media (width < 768px) {
+  body {
+    font-size: var(--body-font-size-s);
+  }
+
+  :root {
+    --heading-font-size-l: 24px;
+  }
 }
 
 /* Hide metadata and section-metadata blocks */

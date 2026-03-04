@@ -22,7 +22,94 @@
           "name": "columns",
           "instances": [
             "div[class*=\"ImageWithContent__StyledContentArea\"]",
-            "div[class*=\"SideBySideLayout__SideBySideGrid\"]",
+            "div[class*=\"SideBySideLayout__SideBySideGrid\"]"
+          ]
+        },
+        {
+          "name": "default-content",
+          "instances": [
+            "div[class*=\"ContentWithSidebar__ContentWithSideBarGrid\"]"
+          ],
+          "section": "isq"
+        }
+      ],
+      "sections": {
+        "footnote": {
+          "selector": "p:has(text*='PayUK quarterly')",
+          "description": "Disclaimer footnote referencing PayUK switch data"
+        }
+      }
+    },
+    {
+      "name": "product-landing",
+      "urlPatterns": [
+        "https://www.nationwide.co.uk/current-accounts",
+        "https://www.nationwide.co.uk/savings",
+        "https://www.nationwide.co.uk/mortgages",
+        "https://www.nationwide.co.uk/loans",
+        "https://www.nationwide.co.uk/credit-cards",
+        "https://www.nationwide.co.uk/insurance"
+      ],
+      "description": "Product landing pages with hero, product cards grid, feature sections, and help/FAQ area. Common pattern: Hero → promo panel → product card grid → feature columns → more cards → help section → footnotes",
+      "blocks": [
+        {
+          "name": "hero",
+          "instances": [
+            "div[class*=\"StyledCompoenents__HeroContainerInner\"]"
+          ]
+        },
+        {
+          "name": "cards",
+          "instances": [
+            "div[class*=\"CardsGrid__StyledCardsGrid\"]",
+            "ol[class*=\"IconBlock__StyledOl\"]"
+          ]
+        },
+        {
+          "name": "columns",
+          "instances": [
+            "div[class*=\"ImageWithContent__StyledContentArea\"]",
+            "div[class*=\"SideBySideLayout__SideBySideGrid\"]"
+          ]
+        },
+        {
+          "name": "default-content",
+          "instances": [
+            "div[class*=\"ContentWithSidebar__ContentWithSideBarGrid\"]"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "generic",
+      "urlPatterns": ["https://www.nationwide.co.uk/"],
+      "description": "Fallback template for any Nationwide page. Uses the same component library — hero, cards, columns, and default content blocks. Applied when no specific template matches.",
+      "blocks": [
+        {
+          "name": "hero",
+          "instances": [
+            "div[class*=\"StyledCompoenents__HeroContainerInner\"]",
+            "div[class*=\"HeroContainer\"]"
+          ]
+        },
+        {
+          "name": "cards",
+          "instances": [
+            "div[class*=\"CardsGrid__StyledCardsGrid\"]",
+            "ol[class*=\"IconBlock__StyledOl\"]",
+            "div[class*=\"ActionCard__ActionCardOuter\"]"
+          ]
+        },
+        {
+          "name": "columns",
+          "instances": [
+            "div[class*=\"ImageWithContent__StyledContentArea\"]",
+            "div[class*=\"SideBySideLayout__SideBySideGrid\"]"
+          ]
+        },
+        {
+          "name": "default-content",
+          "instances": [
             "div[class*=\"ContentWithSidebar__ContentWithSideBarGrid\"]"
           ]
         }

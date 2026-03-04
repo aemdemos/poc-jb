@@ -1,58 +1,161 @@
 /* global WebImporter */
 
-// Embedded page templates configuration - this value will be injected
+// Embedded page templates configuration — synced from page-templates.json
 const PAGE_TEMPLATES = {
-  "templates": [
+  templates: [
     {
-      "name": "homepage",
-      "urls": [
-        "https://www.nationwide.co.uk"
+      name: 'homepage',
+      urls: ['https://www.nationwide.co.uk'],
+      description: 'Nationwide Building Society homepage with hero banner, product navigation cards, feature cards, call checker, internet banking, service quality rankings, and APP scams data',
+      blocks: [
+        {
+          name: 'hero',
+          instances: [
+            'div[class*="StyledCompoenents__HeroContainerInner"]',
+          ],
+        },
+        {
+          name: 'cards',
+          instances: [
+            'ol[class*="IconBlock__StyledOl"]',
+            'div[class*="CardsGrid__StyledCardsGrid"]',
+          ],
+        },
+        {
+          name: 'columns',
+          instances: [
+            'div[class*="ImageWithContent__StyledContentArea"]',
+            'div[class*="SideBySideLayout__SideBySideGrid"]',
+          ],
+        },
+        {
+          name: 'default-content',
+          instances: [
+            'div[class*="ContentWithSidebar__ContentWithSideBarGrid"]',
+          ],
+          section: 'isq',
+        },
       ],
-      "description": "Nationwide Building Society homepage with hero banner, product navigation cards, feature cards, call checker, internet banking, service quality rankings, and APP scams data",
-      "blocks": [
+    },
+    {
+      name: 'product-landing',
+      urlPatterns: [
+        'https://www.nationwide.co.uk/current-accounts',
+        'https://www.nationwide.co.uk/savings',
+        'https://www.nationwide.co.uk/mortgages',
+        'https://www.nationwide.co.uk/loans',
+        'https://www.nationwide.co.uk/credit-cards',
+        'https://www.nationwide.co.uk/insurance',
+      ],
+      description: 'Product landing pages with hero, product cards grid, feature sections, and help/FAQ area',
+      blocks: [
         {
-          "name": "hero",
-          "instances": [
-            "div[class*=\"StyledCompoenents__HeroContainerInner\"]"
-          ]
+          name: 'hero',
+          instances: [
+            'div[class*="StyledCompoenents__HeroContainerInner"]',
+          ],
         },
         {
-          "name": "cards",
-          "instances": [
-            "ol[class*=\"IconBlock__StyledOl\"]",
-            "div[class*=\"CardsGrid__StyledCardsGrid\"]"
-          ]
+          name: 'cards',
+          instances: [
+            'div[class*="CardsGrid__StyledCardsGrid"]',
+            'ol[class*="IconBlock__StyledOl"]',
+          ],
         },
         {
-          "name": "columns",
-          "instances": [
-            "div[class*=\"ImageWithContent__StyledContentArea\"]",
-            "div[class*=\"SideBySideLayout__SideBySideGrid\"]",
-            "div[class*=\"ContentWithSidebar__ContentWithSideBarGrid\"]"
-          ]
-        }
-      ]
-    }
-  ]
+          name: 'columns',
+          instances: [
+            'div[class*="ImageWithContent__StyledContentArea"]',
+            'div[class*="SideBySideLayout__SideBySideGrid"]',
+          ],
+        },
+        {
+          name: 'default-content',
+          instances: [
+            'div[class*="ContentWithSidebar__ContentWithSideBarGrid"]',
+          ],
+        },
+      ],
+    },
+    {
+      name: 'generic',
+      urlPatterns: ['https://www.nationwide.co.uk/'],
+      description: 'Fallback template for any Nationwide page',
+      blocks: [
+        {
+          name: 'hero',
+          instances: [
+            'div[class*="StyledCompoenents__HeroContainerInner"]',
+            'div[class*="HeroContainer"]',
+          ],
+        },
+        {
+          name: 'cards',
+          instances: [
+            'div[class*="CardsGrid__StyledCardsGrid"]',
+            'ol[class*="IconBlock__StyledOl"]',
+            'div[class*="ActionCard__ActionCardOuter"]',
+          ],
+        },
+        {
+          name: 'columns',
+          instances: [
+            'div[class*="ImageWithContent__StyledContentArea"]',
+            'div[class*="SideBySideLayout__SideBySideGrid"]',
+          ],
+        },
+        {
+          name: 'default-content',
+          instances: [
+            'div[class*="ContentWithSidebar__ContentWithSideBarGrid"]',
+          ],
+        },
+      ],
+    },
+  ],
 };
 
 /**
- * Find matching template for the given URL
+ * Find matching template for the given URL.
+ * Tries exact URL match first, then prefix-based urlPatterns,
+ * returning the most specific match.
  */
 function findTemplateByUrl(url) {
   console.log('[Import] Finding template for URL:', url);
+  const normalizedUrl = url.replace(/\/$/, '');
 
-  for (const template of PAGE_TEMPLATES.templates) {
-    for (const templateUrl of template.urls) {
-      // Normalize URLs for comparison
-      const normalizedUrl = url.replace(/\/$/, '');
-      const normalizedTemplateUrl = templateUrl.replace(/\/$/, '');
+  // Pass 1: Exact URL match (highest priority)
+  const exactMatch = PAGE_TEMPLATES.templates.find((template) => {
+    if (!template.urls) return false;
+    return template.urls.some(
+      (templateUrl) => normalizedUrl === templateUrl.replace(/\/$/, ''),
+    );
+  });
 
-      if (normalizedUrl === normalizedTemplateUrl) {
-        console.log('[Import] Found matching template:', template.name);
-        return template;
-      }
+  if (exactMatch) {
+    console.log('[Import] Found exact match template:', exactMatch.name);
+    return exactMatch;
+  }
+
+  // Pass 2: URL pattern (prefix) match — longest prefix wins
+  let bestMatch = null;
+  let bestLength = 0;
+
+  PAGE_TEMPLATES.templates.forEach((template) => {
+    if (template.urlPatterns) {
+      template.urlPatterns.forEach((pattern) => {
+        const normalizedPattern = pattern.replace(/\/$/, '');
+        if (normalizedUrl.startsWith(normalizedPattern) && normalizedPattern.length > bestLength) {
+          bestMatch = template;
+          bestLength = normalizedPattern.length;
+        }
+      });
     }
+  });
+
+  if (bestMatch) {
+    console.log('[Import] Found pattern match template:', bestMatch.name);
+    return bestMatch;
   }
 
   console.warn('[Import] No matching template found for URL:', url);
@@ -72,7 +175,7 @@ function extractBlockName(parserPath) {
  * Find block configuration for a specific block name
  */
 function findBlockConfig(template, blockName) {
-  return template.blocks.find(block => block.name === blockName);
+  return template.blocks.find((block) => block.name === blockName);
 }
 
 /**
@@ -113,7 +216,7 @@ const importConfig = {
     const blockConfig = findBlockConfig(template, parserInfo.name);
     if (!blockConfig) {
       console.error('[Import] No block configuration found for:', parserInfo.name);
-      console.log('[Import] Available blocks:', template.blocks.map(b => b.name));
+      console.log('[Import] Available blocks:', template.blocks.map((b) => b.name));
       return main;
     }
 
@@ -138,7 +241,7 @@ const importConfig = {
           // Execute the parser function
           // Note: The parser typically replaces the element with a table
           // We need to capture what comes after the element in the DOM
-          const nextSibling = element.nextSibling;
+          const { nextSibling } = element;
           const parent = element.parentElement;
 
           parserInfo.parse(element, { document });
@@ -154,20 +257,20 @@ const importConfig = {
           // Capture the result
           const result = {
             instance: index + 1,
-            selector: selector,
+            selector,
             originalHTMLPreview: originalHTML,
             blockCreated: createdBlock ? createdBlock.outerHTML : null,
             blockType: createdBlock ? createdBlock.tagName : null,
           };
 
           results.push(result);
-          instancesFound++;
+          instancesFound += 1;
           console.log(`[Import] ✓ Successfully parsed instance ${index + 1}`);
         } catch (error) {
           console.error(`[Import] Error parsing instance ${index + 1}:`, error);
           results.push({
             instance: index + 1,
-            selector: selector,
+            selector,
             error: error.message,
           });
         }
@@ -195,11 +298,9 @@ const importConfig = {
   /**
    * Generate document path from URL
    */
-  generateDocumentPath: ({ url }) => {
-    return WebImporter.FileUtils.sanitizePath(
-      new URL(url).pathname.replace(/\/$/, '').replace(/\.html$/, '')
-    );
-  },
+  generateDocumentPath: ({ url }) => WebImporter.FileUtils.sanitizePath(
+    new URL(url).pathname.replace(/\/$/, '').replace(/\.html$/, ''),
+  ),
 };
 
 // Export for module usage (Helix Importer)

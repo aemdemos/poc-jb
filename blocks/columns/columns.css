@@ -36,8 +36,8 @@
   font-size: var(--body-font-size-s);
 }
 
-/* Secondary buttons (outline style) in columns */
-.columns .button-container:nth-child(n+2) a.button {
+/* Secondary buttons (outline style) - targets 2nd consecutive button-container */
+.columns .button-container + .button-container a.button {
   background-color: var(--color-white);
   border: 2px solid var(--color-navy);
   color: var(--color-navy);
@@ -74,6 +74,7 @@
 }
 
 .columns.boxed > div > div {
+  box-sizing: border-box;
   background-color: var(--color-blue-light);
   border-radius: 16px;
   padding: var(--spacing-m);
@@ -86,16 +87,21 @@
 
 .columns.boxed > div > div h2 {
   margin-top: 0;
-  font-size: var(--heading-font-size-m);
-  font-weight: 700;
+  margin-bottom: 0;
+  font-weight: 500;
 }
 
+/* Boxed: tighter vertical rhythm matching source */
 .columns.boxed > div > div p {
   font-size: var(--body-font-size-s);
+  margin-top: 16px;
+  margin-bottom: 0;
 }
 
-.columns.boxed .button-container a.button {
-  font-size: var(--body-font-size-s);
+/* Boxed: button spacing — source uses 24px gap, no bottom margin */
+.columns.boxed .button-container {
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 /* Links in boxed columns (e.g., search links) */
@@ -104,13 +110,104 @@
   text-underline-offset: 4px;
 }
 
-@media (width >= 900px) {
+/* Boxed: remove list bullets for search links */
+.columns.boxed ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.columns.boxed li {
+  margin-bottom: var(--spacing-s);
+  font-size: var(--body-font-size-s);
+}
+
+/* Boxed: search box styling */
+.columns.boxed .search-box {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border: 1px solid var(--color-gray);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: var(--spacing-s) 0;
+  transition: box-shadow 0.2s;
+}
+
+.columns.boxed .search-box:hover,
+.columns.boxed .search-box:focus-within {
+  box-shadow: 0 0 0 4px var(--color-hover-ring);
+}
+
+.columns.boxed .search-box .search-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.columns.boxed .search-box input[type="search"] {
+  flex: 1;
+  border: 0;
+  padding: 10px 12px;
+  font-size: var(--body-font-size-s);
+  font-family: var(--body-font-family);
+  background: var(--color-white);
+  outline: none;
+  min-height: 42px;
+}
+
+.columns.boxed .search-box button {
+  background: var(--color-white);
+  border: 0;
+  padding: 8px 12px;
+  cursor: pointer;
+  min-height: 42px;
+  margin: 0;
+  border-radius: 0;
+  color: var(--color-navy);
+  display: flex;
+  align-items: center;
+}
+
+.columns.boxed .search-box button:hover,
+.columns.boxed .search-box button:focus {
+  box-shadow: none;
+  color: var(--link-hover-color);
+}
+
+/* Boxed: button layout — 24px top gap, full-width on mobile */
+.columns.boxed .button-container a.button {
+  margin: 24px 0 0;
+  display: block;
+  width: 100%;
+  text-align: center;
+  white-space: normal;
+}
+
+/* Boxed: side-by-side from tablet (768px) */
+@media (width >= 768px) {
   .columns.boxed > div {
+    flex-direction: row;
+    align-items: stretch;
     gap: var(--spacing-l);
   }
 
   .columns.boxed > div > div {
+    flex: 1;
+    order: unset;
     padding: 32px;
+  }
+
+  .columns.boxed > div > div p,
+  .columns.boxed .button-container a.button,
+  .columns.boxed li {
+    font-size: var(--body-font-size-m);
+  }
+
+  .columns.boxed .button-container a.button {
+    display: inline-flex;
+    width: auto;
   }
 }
 

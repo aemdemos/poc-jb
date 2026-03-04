@@ -66,12 +66,6 @@
   color: var(--link-hover-color);
 }
 
-.cards .cards-card-body a:any-link:not(.button) {
-  color: var(--link-color);
-  text-decoration: underline;
-  font-weight: 500;
-}
-
 @media (width >= 600px) {
   .cards > ul {
     grid-template-columns: repeat(2, 1fr);

@@ -21,6 +21,10 @@
   --color-gray-dark: #42424c;
   --color-white: #fff;
   --color-hover-ring: #91b1ff;
+  --color-blue-accent: #759eff;
+  --color-gray-light: #dadada;
+  --color-gray-border: #e6e6e8;
+  --color-gray-muted: #ebebed;
 
   /* semantic colors */
   --background-color: var(--color-white);
@@ -48,6 +52,9 @@
   --heading-font-size-m: 24px;
   --heading-font-size-s: 20px;
   --heading-font-size-xs: 18px;
+
+  /* layout */
+  --content-max-width: 1260px;
 
   /* spacing */
   --spacing-xs: 8px;
@@ -206,6 +213,12 @@ a:hover {
   text-decoration: underline;
 }
 
+/* All non-button links in main content get underlines for accessibility */
+main a:any-link:not(.button) {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
 /* buttons - primary (navy filled) */
 a.button:any-link,
 button {
@@ -293,7 +306,7 @@ main > .section {
 }
 
 main > .section > div {
-  max-width: 1260px;
+  max-width: var(--content-max-width);
   margin: auto;
   padding: 0 var(--spacing-m);
 }
@@ -338,7 +351,7 @@ main .section.dark a:any-link {
 }
 
 main .section.dark a:hover {
-  color: #759eff;
+  color: var(--color-blue-accent);
 }
 
 /* dark section: primary button inverts to white filled */
@@ -374,7 +387,7 @@ main .section.fca .default-content-wrapper::after {
   content: '';
   display: block;
   margin-top: 36px;
-  border-bottom: 1px solid #e6e6e8;
+  border-bottom: 1px solid var(--color-gray-border);
 }
 
 /* Footnote/disclaimer sections */

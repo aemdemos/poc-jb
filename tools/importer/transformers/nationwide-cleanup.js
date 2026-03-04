@@ -6,11 +6,15 @@
  * Purpose: Remove non-content elements, cookie banners, navigation overlays,
  *          and fix styled-components HTML quirks before block parsing
  * Applies to: www.nationwide.co.uk (all templates)
- * Generated: 2026-02-24
  *
  * SELECTORS EXTRACTED FROM:
  * - Captured DOM during migration workflow (cleaned.html)
  * - Playwright inspection of live site
+ *
+ * Updated: 2026-03-04
+ * - Stopped removing footnote text (now kept as footnote section)
+ * - Added breadcrumb removal for interior pages
+ * - Added promotional overlay/modal removal
  */
 
 const TransformHook = {
@@ -55,6 +59,20 @@ export default function transform(hookName, element, payload) {
       'nav[aria-label="Navigation menu for selecting site context"]',
     ]);
 
+    // Remove breadcrumb navigation (interior pages)
+    WebImporter.DOMUtils.remove(element, [
+      'nav[aria-label="Breadcrumb"]',
+      'nav[class*="Breadcrumb"]',
+      'ol[class*="Breadcrumb"]',
+    ]);
+
+    // Remove promotional overlays and modals
+    WebImporter.DOMUtils.remove(element, [
+      'div[class*="PromotionalOverlay"]',
+      'div[class*="Modal__"]',
+      '[role="dialog"]:not(#onetrust-consent-sdk *)',
+    ]);
+
     // Re-enable scrolling if body has overflow hidden (from cookie modal)
     if (element.style && element.style.overflow === 'hidden') {
       element.setAttribute('style', 'overflow: scroll;');
@@ -89,14 +107,8 @@ export default function transform(hookName, element, payload) {
       });
     });
 
-    // Remove disclaimer/footnote at bottom of page
-    // EXTRACTED: Found <p> with "*PayUK quarterly Current Account Switch Service data"
-    // at the end of main content area in cleaned.html
-    const paragraphs = element.querySelectorAll('p');
-    paragraphs.forEach((p) => {
-      if (p.textContent && p.textContent.trim().startsWith('*PayUK quarterly')) {
-        p.remove();
-      }
-    });
+    // Note: Footnote/disclaimer text is intentionally preserved.
+    // It gets placed in its own section with style: footnote during migration.
+    // Previously removed "*PayUK quarterly..." text — now kept for authoring.
   }
 }

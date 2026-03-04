@@ -1,13 +1,11 @@
 /* global WebImporter */
 
-// Embedded page templates configuration - this value will be injected
+// Embedded page templates configuration — synced from page-templates.json
 const PAGE_TEMPLATES = {
   "templates": [
     {
       "name": "homepage",
-      "urls": [
-        "https://www.nationwide.co.uk"
-      ],
+      "urls": ["https://www.nationwide.co.uk"],
       "description": "Nationwide Building Society homepage with hero banner, product navigation cards, feature cards, call checker, internet banking, service quality rankings, and APP scams data",
       "blocks": [
         {
@@ -27,7 +25,88 @@ const PAGE_TEMPLATES = {
           "name": "columns",
           "instances": [
             "div[class*=\"ImageWithContent__StyledContentArea\"]",
-            "div[class*=\"SideBySideLayout__SideBySideGrid\"]",
+            "div[class*=\"SideBySideLayout__SideBySideGrid\"]"
+          ]
+        },
+        {
+          "name": "default-content",
+          "instances": [
+            "div[class*=\"ContentWithSidebar__ContentWithSideBarGrid\"]"
+          ],
+          "section": "isq"
+        }
+      ]
+    },
+    {
+      "name": "product-landing",
+      "urlPatterns": [
+        "https://www.nationwide.co.uk/current-accounts",
+        "https://www.nationwide.co.uk/savings",
+        "https://www.nationwide.co.uk/mortgages",
+        "https://www.nationwide.co.uk/loans",
+        "https://www.nationwide.co.uk/credit-cards",
+        "https://www.nationwide.co.uk/insurance"
+      ],
+      "description": "Product landing pages with hero, product cards grid, feature sections, and help/FAQ area",
+      "blocks": [
+        {
+          "name": "hero",
+          "instances": [
+            "div[class*=\"StyledCompoenents__HeroContainerInner\"]"
+          ]
+        },
+        {
+          "name": "cards",
+          "instances": [
+            "div[class*=\"CardsGrid__StyledCardsGrid\"]",
+            "ol[class*=\"IconBlock__StyledOl\"]"
+          ]
+        },
+        {
+          "name": "columns",
+          "instances": [
+            "div[class*=\"ImageWithContent__StyledContentArea\"]",
+            "div[class*=\"SideBySideLayout__SideBySideGrid\"]"
+          ]
+        },
+        {
+          "name": "default-content",
+          "instances": [
+            "div[class*=\"ContentWithSidebar__ContentWithSideBarGrid\"]"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "generic",
+      "urlPatterns": ["https://www.nationwide.co.uk/"],
+      "description": "Fallback template for any Nationwide page",
+      "blocks": [
+        {
+          "name": "hero",
+          "instances": [
+            "div[class*=\"StyledCompoenents__HeroContainerInner\"]",
+            "div[class*=\"HeroContainer\"]"
+          ]
+        },
+        {
+          "name": "cards",
+          "instances": [
+            "div[class*=\"CardsGrid__StyledCardsGrid\"]",
+            "ol[class*=\"IconBlock__StyledOl\"]",
+            "div[class*=\"ActionCard__ActionCardOuter\"]"
+          ]
+        },
+        {
+          "name": "columns",
+          "instances": [
+            "div[class*=\"ImageWithContent__StyledContentArea\"]",
+            "div[class*=\"SideBySideLayout__SideBySideGrid\"]"
+          ]
+        },
+        {
+          "name": "default-content",
+          "instances": [
             "div[class*=\"ContentWithSidebar__ContentWithSideBarGrid\"]"
           ]
         }
@@ -37,22 +116,45 @@ const PAGE_TEMPLATES = {
 };
 
 /**
- * Find matching template for the given URL
+ * Find matching template for the given URL.
+ * Tries exact URL match first, then prefix-based urlPatterns,
+ * returning the most specific match.
  */
 function findTemplateByUrl(url) {
   console.log('[Import] Finding template for URL:', url);
+  const normalizedUrl = url.replace(/\/$/, '');
 
+  // Pass 1: Exact URL match (highest priority)
   for (const template of PAGE_TEMPLATES.templates) {
-    for (const templateUrl of template.urls) {
-      // Normalize URLs for comparison
-      const normalizedUrl = url.replace(/\/$/, '');
-      const normalizedTemplateUrl = templateUrl.replace(/\/$/, '');
-
-      if (normalizedUrl === normalizedTemplateUrl) {
-        console.log('[Import] Found matching template:', template.name);
-        return template;
+    if (template.urls) {
+      for (const templateUrl of template.urls) {
+        if (normalizedUrl === templateUrl.replace(/\/$/, '')) {
+          console.log('[Import] Found exact match template:', template.name);
+          return template;
+        }
       }
     }
+  }
+
+  // Pass 2: URL pattern (prefix) match — longest prefix wins
+  let bestMatch = null;
+  let bestLength = 0;
+
+  for (const template of PAGE_TEMPLATES.templates) {
+    if (template.urlPatterns) {
+      for (const pattern of template.urlPatterns) {
+        const normalizedPattern = pattern.replace(/\/$/, '');
+        if (normalizedUrl.startsWith(normalizedPattern) && normalizedPattern.length > bestLength) {
+          bestMatch = template;
+          bestLength = normalizedPattern.length;
+        }
+      }
+    }
+  }
+
+  if (bestMatch) {
+    console.log('[Import] Found pattern match template:', bestMatch.name);
+    return bestMatch;
   }
 
   console.warn('[Import] No matching template found for URL:', url);

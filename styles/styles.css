@@ -358,26 +358,28 @@ main .section.dark button.secondary {
   color: var(--color-white);
 }
 
-/* ISQ section - 66.67% max-width on desktop, left-justified */
+/* ISQ section - constrain children to 66.67% on desktop, naturally left-aligned */
 @media (width >= 900px) {
-  main .section.isq .default-content-wrapper {
+  main .section.isq .default-content-wrapper > * {
     max-width: 66.67%;
   }
 }
 
-/* FCA section - bottom border separator (on inner container to match content width) */
+/* FCA section - border inside padding area so it matches text width */
 main .section.fca {
   margin: var(--spacing-m) 0;
 }
 
-main .section.fca > div {
-  padding-bottom: var(--spacing-l);
+main .section.fca .default-content-wrapper::after {
+  content: '';
+  display: block;
+  margin-top: 36px;
   border-bottom: 1px solid #e6e6e8;
 }
 
 /* Footnote/disclaimer sections */
 main .section.footnote {
-  margin: var(--spacing-s) 0;
+  margin: var(--spacing-s) 0 48px;
 }
 
 main .section.footnote p {

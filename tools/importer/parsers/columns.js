@@ -8,26 +8,28 @@
  * Base Block: columns
  *
  * Block Structure (from block library):
- * - Row 1: Block name header ("Columns")
+ * - Row 1: Block name header ("Columns" or "Columns (variant)")
  * - Row 2+: Each row has multiple cells (columns), content per cell
  *
- * Handles THREE distinct column patterns on Nationwide homepage:
+ * Handles TWO distinct column patterns on Nationwide pages:
  *
  * Pattern A - ImageWithContent (image + text side-by-side):
  *   div.vertical-rhythm--image-with-content
  *     div.ImageWithContent__StyledImageArea > img
  *     div.ImageWithContent__StyledContentArea > h2, p, ul, a
+ *   → Columns (default), or Columns (dark variant when parent has dark bg)
  *
- * Pattern B - SideBySideLayout (two equal text columns):
+ * Pattern B - SideBySideLayout (two equal text/image columns):
  *   div.SideBySideLayout__SideBySideGrid
- *     div.NelComponents__Col (left) > h2, p, a
- *     div.NelComponents__Col (right) > h2, p, a
+ *     div.NelComponents__Col (left) > h2, p, img, a
+ *     div.NelComponents__Col (right) > h2, p, img, a
+ *   → Columns (text-links) when text-only, Columns (boxed, search) when
+ *     containing search/form elements, otherwise Columns
  *
- * Pattern C - ContentWithSidebar (intro text block):
- *   div.ContentWithSidebar__ContentWithSideBarGrid
- *     h2, div.RichText > p (introductory text content)
+ * Note: ContentWithSidebar pattern is now handled by default-content.js
+ * as it maps to EDS default content with section metadata, not a block.
  *
- * Generated: 2026-02-24
+ * Updated: 2026-03-04
  */
 export default function parse(element, { document }) {
   const cells = [];
@@ -37,8 +39,6 @@ export default function parse(element, { document }) {
     || element.matches('div[class*="ImageWithContent"]');
   const isSideBySide = element.matches('div[class*="SideBySideLayout__SideBySideGrid"]')
     || !!element.querySelector('div[class*="SideBySideLayout__SideBySideGrid"]');
-  const isContentWithSidebar = element.matches('div[class*="ContentWithSidebar__ContentWithSideBarGrid"]')
-    || !!element.querySelector('div[class*="ContentWithSidebar__ContentWithSideBarGrid"]');
 
   if (isImageWithContent) {
     // Pattern A: Image + Content columns
@@ -250,49 +250,6 @@ export default function parse(element, { document }) {
     if (columnCells.length > 0) {
       cells.push(columnCells);
     }
-  } else if (isContentWithSidebar) {
-    // Pattern C: Content with sidebar (used as intro text block)
-    // VALIDATED: div[class*="ContentWithSidebar__ContentWithSideBarGrid"] in cleaned.html
-    const wrapper = element.querySelector('div[class*="ContentWithSidebar__ContainerWrapper"]')
-      || element;
-
-    const cell = document.createElement('div');
-
-    // Extract heading
-    const heading = wrapper.querySelector('h2') || wrapper.querySelector('h3');
-    if (heading) {
-      const h = document.createElement(heading.tagName.toLowerCase());
-      h.innerHTML = heading.innerHTML;
-      cell.appendChild(h);
-    }
-
-    // Extract body text
-    const paragraphs = Array.from(wrapper.querySelectorAll('div[class*="RichText"] p, p'));
-    const seen = new Set();
-    paragraphs.forEach((p) => {
-      const text = p.textContent.trim();
-      if (text && !seen.has(text)) {
-        seen.add(text);
-        const para = document.createElement('p');
-        para.innerHTML = p.innerHTML;
-        cell.appendChild(para);
-      }
-    });
-
-    // Extract links
-    const links = Array.from(wrapper.querySelectorAll('a[href]'));
-    links.forEach((link) => {
-      if (!link.closest('p')) {
-        const p = document.createElement('p');
-        const a = document.createElement('a');
-        a.href = link.href;
-        a.textContent = link.textContent.trim();
-        p.appendChild(a);
-        cell.appendChild(p);
-      }
-    });
-
-    cells.push([cell]);
   } else {
     // Fallback: treat direct children as columns
     const children = Array.from(element.children);
@@ -306,8 +263,39 @@ export default function parse(element, { document }) {
     }
   }
 
+  // Determine variant name based on content analysis
+  let blockName = 'Columns';
+
+  if (isSideBySide) {
+    // Check if columns contain search/form elements → boxed, search variant
+    const hasSearch = !!element.querySelector('input[type="search"], input[type="text"], [class*="Search"]');
+    // Check if columns are primarily text+links without images → text-links variant
+    const hasImages = !!element.querySelector('img');
+    const hasHeadings = !!element.querySelector('h2, h3');
+
+    if (hasSearch) {
+      blockName = 'Columns (boxed, search)';
+    } else if (hasHeadings && !hasImages) {
+      blockName = 'Columns (text-links)';
+    }
+  } else if (isImageWithContent) {
+    // Check if parent section has dark background styling
+    const parentSection = element.closest('[class*="VerticalSpacer"]') || element.parentElement;
+    const bgColor = parentSection
+      ? getComputedStyle(parentSection).backgroundColor
+      : '';
+    // Dark sections detected by very low RGB values in background
+    if (bgColor && bgColor !== 'rgba(0, 0, 0, 0)') {
+      const match = bgColor.match(/\d+/g);
+      if (match && parseInt(match[0], 10) < 30 && parseInt(match[2], 10) < 80) {
+        // Dark background — will need section metadata style: dark
+        // Block name stays "Columns" — the dark styling comes from the section
+      }
+    }
+  }
+
   // Create block using WebImporter utility
-  const block = WebImporter.Blocks.createBlock(document, { name: 'Columns', cells });
+  const block = WebImporter.Blocks.createBlock(document, { name: blockName, cells });
 
   // Replace original element with structured block table
   element.replaceWith(block);

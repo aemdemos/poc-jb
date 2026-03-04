@@ -188,7 +188,7 @@
     padding: var(--spacing-xl) 90px;
     min-height: 420px;
     gap: 0 var(--spacing-l);
-    max-width: 1260px;
+    max-width: var(--content-max-width);
     margin: 0 auto;
   }
 

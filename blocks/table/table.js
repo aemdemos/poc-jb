@@ -23,7 +23,7 @@ export default async function decorate(block) {
     [...row.children].forEach((cell) => {
       const td = document.createElement(i === 0 && header ? 'th' : 'td');
 
-      if (i === 0) td.setAttribute('scope', 'column');
+      if (i === 0) td.setAttribute('scope', 'col');
       td.innerHTML = cell.innerHTML;
       tr.append(td);
     });

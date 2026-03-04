@@ -19,6 +19,23 @@ export default function decorate(block) {
     moveInstrumentation(img, optimizedPic.querySelector('img'));
     img.closest('picture').replaceWith(optimizedPic);
   });
+  /* icon-nav: wrap each card image in the same link as the card body */
+  if (block.classList.contains('icon-nav')) {
+    ul.querySelectorAll(':scope > li').forEach((li) => {
+      const imgDiv = li.querySelector('.cards-card-image');
+      const link = li.querySelector('.cards-card-body a');
+      if (imgDiv && link) {
+        const wrapper = document.createElement('a');
+        wrapper.href = link.href;
+        wrapper.setAttribute('aria-hidden', 'true');
+        wrapper.tabIndex = -1;
+        wrapper.className = 'cards-card-image-link';
+        while (imgDiv.firstChild) wrapper.append(imgDiv.firstChild);
+        imgDiv.append(wrapper);
+      }
+    });
+  }
+
   block.textContent = '';
   block.append(ul);
 }

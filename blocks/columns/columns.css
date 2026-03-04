@@ -81,7 +81,7 @@
 
 /* Second column gets gray background */
 .columns.boxed > div > div:nth-child(2) {
-  background-color: #ebebed;
+  background-color: var(--color-gray-muted);
 }
 
 .columns.boxed > div > div h2 {
@@ -100,12 +100,6 @@
 .columns.boxed .button-container {
   margin-top: 0;
   margin-bottom: 0;
-}
-
-/* Links in boxed columns (e.g., search links) */
-.columns.boxed a:any-link:not(.button) {
-  text-decoration: underline;
-  text-underline-offset: 4px;
 }
 
 /* Boxed: remove list bullets for search links */
@@ -223,7 +217,8 @@
   padding: 0;
   margin: var(--spacing-xs) 0 0;
   min-height: unset;
-  text-decoration: none;
+  text-decoration: underline;
+  text-underline-offset: 4px;
   white-space: normal;
   display: inline;
 }

@@ -129,6 +129,11 @@
   margin-bottom: 12px;
 }
 
+.cards.icon-nav .cards-card-image-link {
+  display: flex;
+  text-decoration: none;
+}
+
 .cards.icon-nav > ul > li img {
   width: 60px;
   height: 60px;

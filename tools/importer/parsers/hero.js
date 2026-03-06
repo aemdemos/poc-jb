@@ -10,9 +10,7 @@
  * Block Structure (EDS block table):
  * - Row 1: Badge/award image (e.g. Which? awards badge)
  * - Row 2: Content (heading with <em> red accent, body text, CTA link)
- *
- * Note: The "Switch Guarantee" logo is NOT part of the authored content.
- * It is injected at runtime by hero.js as the third child div.
+ * - Row 3 (optional): Switch Guarantee logo, authored in content when present on source page
  *
  * Source HTML Pattern (from cleaned.html):
  * div.StyledCompoenents__HeroContainerInner
@@ -99,7 +97,17 @@ export default function parse(element, { document }) {
 
   cells.push([contentCell]);
 
-  // Create block table — guarantee image is added by hero.js at runtime
+  // Row 3 (optional): Switch Guarantee logo if present on the source page
+  const guaranteeImage = element.querySelector('img[alt*="Switch guarantee" i]')
+    || element.querySelector('img[alt*="switch guarantee" i]')
+    || element.querySelector('img[src*="switch-guarantee"]');
+  if (guaranteeImage && guaranteeImage !== badgeImage) {
+    const img = document.createElement('img');
+    img.src = guaranteeImage.src;
+    img.alt = guaranteeImage.alt || 'Current account Switch guarantee logo';
+    cells.push([img]);
+  }
+
   const block = WebImporter.Blocks.createBlock(document, { name: 'Hero', cells });
 
   // Replace original element with structured block table

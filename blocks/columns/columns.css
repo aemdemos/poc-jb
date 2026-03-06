@@ -62,6 +62,10 @@
     flex: 1;
     order: unset;
   }
+
+  .columns .button-container a.button {
+    font-size: var(--body-font-size-m);
+  }
 }
 
 /* ========================================
@@ -211,24 +215,26 @@
 .columns.text-links .button-container a.button {
   background: transparent;
   border: 0;
+  border-bottom: 1px solid var(--color-navy);
+  border-radius: 0;
   color: var(--color-navy);
   font-size: var(--body-font-size-m);
   font-weight: 500;
-  padding: 0;
+  padding: 0 0 2px;
   margin: var(--spacing-xs) 0 0;
   min-height: unset;
-  text-decoration: underline;
-  text-underline-offset: 4px;
+  text-decoration: none;
   white-space: normal;
   display: inline;
+  transition: border-bottom-color var(--transition-fast);
 }
 
 .columns.text-links .button-container a.button:hover,
 .columns.text-links .button-container a.button:focus {
   box-shadow: none;
-  text-decoration: underline;
-  text-underline-offset: 4px;
+  text-decoration: none;
   color: var(--link-hover-color);
+  border-bottom-color: transparent;
 }
 
 /* Text-links: center links on mobile only */
@@ -269,14 +275,14 @@
   font-size: var(--body-font-size-s);
 }
 
-.dark .columns a.button:any-link {
-  background-color: transparent;
-  color: var(--color-white);
+main .section.dark .columns a.button:any-link {
+  background-color: var(--color-white);
+  color: var(--color-navy);
   border: 2px solid var(--color-white);
 }
 
-.dark .columns a.button:hover,
-.dark .columns a.button:focus {
+main .section.dark .columns a.button:hover,
+main .section.dark .columns a.button:focus {
   background-color: var(--color-white);
   color: var(--color-navy);
 }
@@ -314,21 +320,7 @@
   text-align: center;
 }
 
-/* Dark section: tablet+ font-size (20px) and auto-width button */
-@media (width >= 768px) {
-  .dark .columns p,
-  .dark .columns li,
-  .dark .columns .button-container a.button {
-    font-size: var(--body-font-size-m);
-  }
-
-  .dark .columns .button-container a.button {
-    display: inline-block;
-    width: auto;
-  }
-}
-
-/* Dark section: side-by-side from tablet (768px) */
+/* Dark section: tablet+ layout and font-size */
 @media (width >= 768px) {
   .dark .columns > div {
     flex-direction: row;
@@ -338,6 +330,17 @@
   .dark .columns > div > div {
     flex: 1;
     order: unset;
+  }
+
+  .dark .columns p,
+  .dark .columns li,
+  .dark .columns .button-container a.button {
+    font-size: var(--body-font-size-m);
+  }
+
+  .dark .columns .button-container a.button {
+    display: inline-block;
+    width: auto;
   }
 }
 

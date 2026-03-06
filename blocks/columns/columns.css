@@ -276,8 +276,8 @@
 }
 
 main .section.dark .columns a.button:any-link {
-  background-color: transparent;
-  color: var(--color-white);
+  background-color: var(--color-white);
+  color: var(--color-navy);
   border: 2px solid var(--color-white);
 }
 

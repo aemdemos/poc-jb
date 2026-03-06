@@ -79,6 +79,11 @@
   margin: var(--spacing-s) 0;
 }
 
+/* Override global strong navy color — must be white on navy hero background */
+.hero strong {
+  color: inherit;
+}
+
 .hero picture {
   position: relative;
   display: block;

@@ -2,7 +2,9 @@
   "templates": [
     {
       "name": "homepage",
-      "urls": ["https://www.nationwide.co.uk"],
+      "urls": [
+        "https://www.nationwide.co.uk"
+      ],
       "description": "Nationwide Building Society homepage with hero banner, product navigation cards, feature cards, call checker, internet banking, service quality rankings, and APP scams data",
       "blocks": [
         {
@@ -21,7 +23,7 @@
         {
           "name": "columns",
           "instances": [
-            "div[class*=\"ImageWithContent__StyledContentArea\"]",
+            "div[class*=\"vertical-rhythm--image-with-content\"]",
             "div[class*=\"SideBySideLayout__SideBySideGrid\"]"
           ]
         },
@@ -30,7 +32,7 @@
           "instances": [
             "div[class*=\"ContentWithSidebar__ContentWithSideBarGrid\"]"
           ],
-          "section": "isq"
+          "section": "narrow-text"
         }
       ],
       "sections": {
@@ -68,7 +70,7 @@
         {
           "name": "columns",
           "instances": [
-            "div[class*=\"ImageWithContent__StyledContentArea\"]",
+            "div[class*=\"vertical-rhythm--image-with-content\"]",
             "div[class*=\"SideBySideLayout__SideBySideGrid\"]"
           ]
         },
@@ -78,11 +80,17 @@
             "div[class*=\"ContentWithSidebar__ContentWithSideBarGrid\"]"
           ]
         }
+      ],
+      "urls": [
+        "https://www.nationwide.co.uk/current-accounts/flexdirect",
+        "https://www.nationwide.co.uk/mortgages/first-time-buyers"
       ]
     },
     {
       "name": "generic",
-      "urlPatterns": ["https://www.nationwide.co.uk/"],
+      "urlPatterns": [
+        "https://www.nationwide.co.uk/"
+      ],
       "description": "Fallback template for any Nationwide page. Uses the same component library — hero, cards, columns, and default content blocks. Applied when no specific template matches.",
       "blocks": [
         {
@@ -103,7 +111,7 @@
         {
           "name": "columns",
           "instances": [
-            "div[class*=\"ImageWithContent__StyledContentArea\"]",
+            "div[class*=\"vertical-rhythm--image-with-content\"]",
             "div[class*=\"SideBySideLayout__SideBySideGrid\"]"
           ]
         },
@@ -113,6 +121,9 @@
             "div[class*=\"ContentWithSidebar__ContentWithSideBarGrid\"]"
           ]
         }
+      ],
+      "urls": [
+        "https://www.nationwide.co.uk/help/payments/send-money-to-another-account"
       ]
     }
   ]

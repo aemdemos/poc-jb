@@ -24,7 +24,7 @@ const PAGE_TEMPLATES = {
         {
           name: 'columns',
           instances: [
-            'div[class*="ImageWithContent__StyledContentArea"]',
+            'div[class*="vertical-rhythm--image-with-content"]',
             'div[class*="SideBySideLayout__SideBySideGrid"]',
           ],
         },
@@ -33,7 +33,7 @@ const PAGE_TEMPLATES = {
           instances: [
             'div[class*="ContentWithSidebar__ContentWithSideBarGrid"]',
           ],
-          section: 'isq',
+          section: 'narrow-text',
         },
       ],
     },
@@ -65,7 +65,7 @@ const PAGE_TEMPLATES = {
         {
           name: 'columns',
           instances: [
-            'div[class*="ImageWithContent__StyledContentArea"]',
+            'div[class*="vertical-rhythm--image-with-content"]',
             'div[class*="SideBySideLayout__SideBySideGrid"]',
           ],
         },
@@ -100,7 +100,7 @@ const PAGE_TEMPLATES = {
         {
           name: 'columns',
           instances: [
-            'div[class*="ImageWithContent__StyledContentArea"]',
+            'div[class*="vertical-rhythm--image-with-content"]',
             'div[class*="SideBySideLayout__SideBySideGrid"]',
           ],
         },

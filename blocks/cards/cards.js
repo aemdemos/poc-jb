@@ -9,8 +9,31 @@ export default function decorate(block) {
     moveInstrumentation(row, li);
     while (row.firstElementChild) li.append(row.firstElementChild);
     [...li.children].forEach((div) => {
-      if (div.children.length === 1 && (div.querySelector('picture') || div.querySelector(':scope > img'))) div.className = 'cards-card-image';
-      else div.className = 'cards-card-body';
+      if (div.children.length === 1 && (div.querySelector('picture') || div.querySelector(':scope > img'))) {
+        div.className = 'cards-card-image';
+      } else {
+        div.className = 'cards-card-body';
+        // Single-column card: extract leading image into its own cards-card-image div
+        const firstChild = div.firstElementChild;
+        if (firstChild) {
+          let pic = null;
+          if (firstChild.tagName === 'PICTURE') {
+            pic = firstChild;
+          } else if (firstChild.tagName === 'P' && firstChild.children.length === 1 && firstChild.querySelector(':scope > picture')) {
+            pic = firstChild.querySelector(':scope > picture');
+          }
+          if (pic) {
+            const imgDiv = document.createElement('div');
+            imgDiv.className = 'cards-card-image';
+            imgDiv.append(pic);
+            // Remove empty <p> wrapper if picture was its only content
+            if (firstChild.tagName === 'P' && firstChild.children.length === 0 && !firstChild.textContent.trim()) {
+              firstChild.remove();
+            }
+            li.prepend(imgDiv);
+          }
+        }
+      }
     });
     ul.append(li);
   });

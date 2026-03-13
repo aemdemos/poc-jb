@@ -5,7 +5,7 @@
   padding: 0;
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--spacing-m);
+  gap: var(--spacing-s);
 }
 
 .cards > ul > li {
@@ -69,6 +69,7 @@
 @media (width >= 600px) {
   .cards > ul {
     grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-m);
   }
 
   .cards .cards-card-body {
@@ -77,6 +78,16 @@
 }
 
 @media (width >= 900px) {
+  .cards > ul {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+
+  /* When only 2 cards, keep 2-column layout so they fill the row evenly */
+  .cards > ul:not(:has(> li:nth-child(3))) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .cards .cards-card-body p:first-child strong {
     font-size: var(--heading-font-size-l);
   }
@@ -86,6 +97,110 @@
   }
 
   .cards .cards-card-body p:last-child a.button {
+    font-size: var(--body-font-size-m);
+  }
+}
+
+/* ========================================
+   Directory variant - text-only link cards
+   (e.g. Help page category cards)
+   ======================================== */
+
+.cards.directory > ul {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.cards.directory > ul > li {
+  display: flex;
+  flex-direction: column;
+}
+
+.cards.directory .cards-card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: var(--spacing-m);
+}
+
+/* Remove underlines from all links in directory cards */
+.cards.directory .cards-card-body a:any-link {
+  text-decoration: none;
+  color: var(--color-navy);
+  font-weight: 500;
+}
+
+.cards.directory .cards-card-body a:hover {
+  text-decoration: underline;
+  color: var(--link-hover-color);
+}
+
+/* Topic links - display as block list */
+.cards.directory .cards-card-body p:not(:first-child, :last-child) {
+  margin: 0;
+}
+
+.cards.directory .cards-card-body p:not(:first-child, :last-child) a {
+  display: block;
+  padding: 4px 0;
+}
+
+/* Category link - pushed to bottom with separator */
+.cards.directory .cards-card-body p:last-child {
+  margin-top: auto;
+  display: flow-root;
+}
+
+.cards.directory .cards-card-body p:last-child::before {
+  content: '';
+  display: block;
+  height: 1px;
+  background-color: var(--color-gray-border);
+  margin: var(--spacing-m) 0 var(--spacing-s);
+}
+
+.cards.directory .cards-card-body p:last-child a.button {
+  text-decoration: none;
+  border: 0;
+  font-weight: 500;
+  font-size: var(--body-font-size-s);
+  color: var(--color-navy);
+  padding: 0;
+  margin: 0;
+  min-height: unset;
+  display: inline;
+  background: transparent;
+  white-space: normal;
+}
+
+.cards.directory .cards-card-body p:last-child a.button:hover,
+.cards.directory .cards-card-body p:last-child a.button:focus {
+  box-shadow: none;
+  text-decoration: underline;
+  color: var(--link-hover-color);
+}
+
+/* Cards with only 2 paragraphs (no category link) - no separator on last-child */
+.cards.directory .cards-card-body p:nth-child(2):last-child {
+  margin-top: 0;
+}
+
+.cards.directory .cards-card-body p:nth-child(2):last-child::before {
+  display: none;
+}
+
+@media (width < 600px) {
+  .cards.directory > ul {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (width >= 900px) {
+  .cards.directory > ul {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .cards.directory .cards-card-body p:not(:first-child, :last-child) a,
+  .cards.directory .cards-card-body p:last-child a.button {
     font-size: var(--body-font-size-m);
   }
 }
@@ -145,6 +260,7 @@
   padding: 0;
 }
 
+/* stylelint-disable no-descending-specificity -- icon-nav and directory are mutually exclusive variants */
 .cards.icon-nav .cards-card-body p {
   margin: 0;
   font-size: var(--body-font-size-s);
@@ -185,6 +301,7 @@
   border-bottom-color: var(--link-hover-color);
   text-decoration: none;
 }
+/* stylelint-enable no-descending-specificity */
 
 @media (width >= 600px) {
   .cards.icon-nav > ul > li {
@@ -195,6 +312,24 @@
 
   .cards.icon-nav > ul {
     margin: 0 -12px;
+  }
+}
+
+/* ========================================
+   Featured variant - prominent single card
+   Uses 3-col grid with span 2 on desktop,
+   full-width single column on tablet/mobile
+   ======================================== */
+
+@media (width < 900px) {
+  .cards.featured > ul {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (width >= 900px) {
+  .cards.featured > ul > li {
+    grid-column: 1 / span 2;
   }
 }
 

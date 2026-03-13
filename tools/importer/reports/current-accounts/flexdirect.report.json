@@ -1,0 +1,21 @@
+{
+  "status": "success",
+  "url": "https://www.nationwide.co.uk/current-accounts/flexdirect",
+  "path": "current-accounts/flexdirect",
+  "timestamp": "2026-03-13T20:08:27.160Z",
+  "title": "FlexDirect | In-credit interest current account | Nationwide",
+  "template": "product-landing",
+  "blocks": [
+    "hero",
+    "cards",
+    "cards",
+    "cards",
+    "cards",
+    "cards",
+    "columns",
+    "columns",
+    "columns",
+    "columns",
+    "columns"
+  ]
+}

@@ -32,8 +32,11 @@ export default function parse(element, { document }) {
   // Detect which card pattern we're dealing with
   const isIconCards = element.matches('ol[class*="IconBlock"]')
     || !!element.querySelector('ol[class*="IconBlock__StyledOl"]');
-  const isActionCards = element.matches('div[class*="CardsGrid"]')
-    || !!element.querySelector('div[class*="ActionCard__ActionCardOuter"]');
+  const isContactCards = !!element.querySelector('[class*="GenericContactingCard"]');
+  const isLinkCards = !!element.querySelector('[class*="LinkCard__Card"]');
+  const isActionCards = !isContactCards && !isLinkCards
+    && (element.matches('div[class*="CardsGrid"]')
+      || !!element.querySelector('div[class*="ActionCard__ActionCardOuter"]'));
 
   if (isIconCards) {
     // Pattern A: Icon Navigation Cards
@@ -151,6 +154,112 @@ export default function parse(element, { document }) {
       }
 
       cells.push([imgCell, textCell]);
+    });
+  } else if (isContactCards) {
+    // Pattern C: Contact Cards (phone, branch, etc.)
+    // Note: Cards may be <section> or <div> elements, so use attribute selector only
+    // Handles: h2/h3/h4 headings, paragraphs, ol/ul lists, and multiple links
+    const contactCards = Array.from(
+      element.querySelectorAll('[class*="GenericContactingCard__Card"]'),
+    );
+
+    contactCards.forEach((card) => {
+      const headings = Array.from(card.querySelectorAll('h2, h3, h4'));
+      const paragraphs = Array.from(card.querySelectorAll('p'));
+      const lists = Array.from(card.querySelectorAll('ol, ul'));
+      const links = Array.from(card.querySelectorAll('a[href]'));
+
+      const textCell = document.createElement('div');
+
+      headings.forEach((h) => {
+        const text = h.textContent.trim();
+        if (text) {
+          const heading = document.createElement(h.tagName.toLowerCase());
+          heading.textContent = text;
+          textCell.appendChild(heading);
+        }
+      });
+
+      paragraphs.forEach((p) => {
+        const text = p.textContent.trim();
+        if (text) {
+          const para = document.createElement('p');
+          para.innerHTML = p.innerHTML;
+          textCell.appendChild(para);
+        }
+      });
+
+      lists.forEach((list) => {
+        const newList = document.createElement(list.tagName.toLowerCase());
+        const items = Array.from(list.querySelectorAll(':scope > li'));
+        items.forEach((li) => {
+          const newLi = document.createElement('li');
+          newLi.innerHTML = li.innerHTML;
+          if (newLi.textContent.trim()) {
+            newList.appendChild(newLi);
+          }
+        });
+        if (newList.children.length > 0) {
+          textCell.appendChild(newList);
+        }
+      });
+
+      // Extract links that aren't already inside extracted headings, paragraphs, or lists
+      const extractedLinks = new Set();
+      textCell.querySelectorAll('a[href]').forEach((a) => extractedLinks.add(a.textContent.trim()));
+
+      links.forEach((link) => {
+        const text = link.textContent.trim();
+        if (text && !extractedLinks.has(text)) {
+          extractedLinks.add(text);
+          const p = document.createElement('p');
+          const strong = document.createElement('strong');
+          const a = document.createElement('a');
+          a.href = link.href;
+          a.textContent = text;
+          strong.appendChild(a);
+          p.appendChild(strong);
+          textCell.appendChild(p);
+        }
+      });
+
+      if (textCell.childNodes.length > 0) {
+        cells.push([textCell]);
+      }
+    });
+  } else if (isLinkCards) {
+    // Pattern D: Link Cards (related links sections)
+    // Structure: <section class="LinkCard__Card"> with H2 + UL of links
+    const linkCards = Array.from(
+      element.querySelectorAll('[class*="LinkCard__Card"]'),
+    );
+
+    linkCards.forEach((card) => {
+      const heading = card.querySelector('h2, h3');
+      const links = Array.from(card.querySelectorAll('a[href]'));
+
+      const textCell = document.createElement('div');
+
+      if (heading) {
+        const h = document.createElement(heading.tagName.toLowerCase());
+        h.textContent = heading.textContent.trim();
+        textCell.appendChild(h);
+      }
+
+      if (links.length > 0) {
+        const ul = document.createElement('ul');
+        links.forEach((link) => {
+          const li = document.createElement('li');
+          const a = document.createElement('a');
+          a.href = link.href;
+          a.textContent = link.textContent.trim();
+          li.appendChild(a);
+          ul.appendChild(li);
+        });
+        textCell.appendChild(ul);
+      }
+
+      cells.push([textCell]);
     });
   } else {
     // Fallback: generic card-like items

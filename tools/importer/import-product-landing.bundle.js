@@ -443,6 +443,66 @@ var CustomImportScript = (() => {
     element.replaceWith(fragment);
   }
 
+  // tools/importer/parsers/accordion.js
+  function parse5(element, { document }) {
+    const cells = [];
+    const headings = Array.from(element.querySelectorAll("h3, h4")).filter(
+      (h) => h.querySelector("button")
+    );
+    headings.forEach((heading) => {
+      const button = heading.querySelector("button");
+      const labelCell = document.createElement("div");
+      const labelText = button.textContent.trim();
+      const p = document.createElement("p");
+      p.textContent = labelText;
+      labelCell.appendChild(p);
+      const bodyCell = document.createElement("div");
+      let nextEl = heading.nextElementSibling;
+      while (nextEl) {
+        if ((nextEl.tagName === "H3" || nextEl.tagName === "H4") && nextEl.querySelector("button")) {
+          break;
+        }
+        const paragraphs = nextEl.querySelectorAll("p");
+        const lists = nextEl.querySelectorAll("ul, ol");
+        const links = nextEl.querySelectorAll("a[href]");
+        if (paragraphs.length > 0) {
+          paragraphs.forEach((para) => {
+            const newP = document.createElement("p");
+            newP.innerHTML = para.innerHTML;
+            bodyCell.appendChild(newP);
+          });
+        } else if (lists.length > 0) {
+          lists.forEach((list) => {
+            const newList = document.createElement(list.tagName.toLowerCase());
+            Array.from(list.querySelectorAll("li")).forEach((li) => {
+              const newLi = document.createElement("li");
+              newLi.innerHTML = li.innerHTML;
+              newList.appendChild(newLi);
+            });
+            bodyCell.appendChild(newList);
+          });
+        } else if (nextEl.textContent.trim()) {
+          const newP = document.createElement("p");
+          newP.textContent = nextEl.textContent.trim();
+          bodyCell.appendChild(newP);
+        }
+        nextEl = nextEl.nextElementSibling;
+      }
+      if (labelText && bodyCell.childNodes.length > 0) {
+        cells.push([labelCell, bodyCell]);
+      } else if (labelText) {
+        const emptyBody = document.createElement("div");
+        const placeholder = document.createElement("p");
+        placeholder.textContent = "(Content available on source page)";
+        emptyBody.appendChild(placeholder);
+        cells.push([labelCell, emptyBody]);
+      }
+    });
+    if (cells.length === 0) return;
+    const block = WebImporter.Blocks.createBlock(document, { name: "Accordion", cells });
+    element.replaceWith(block);
+  }
+
   // tools/importer/transformers/nationwide-cleanup.js
   var TransformHook = {
     beforeTransform: "beforeTransform",
@@ -455,7 +515,13 @@ var CustomImportScript = (() => {
         ".onetrust-pc-dark-filter"
       ]);
       WebImporter.DOMUtils.remove(element, [
-        'header[class*="BaseHeader"]'
+        "header"
+      ]);
+      WebImporter.DOMUtils.remove(element, [
+        'div[class*="globalNavigation"]',
+        'div[class*="SkipLinks"]',
+        'div[class*="searchBox"]',
+        'nav[class*="loginFlyout"]'
       ]);
       WebImporter.DOMUtils.remove(element, [
         "#footer",
@@ -510,7 +576,8 @@ var CustomImportScript = (() => {
     "hero": parse,
     "cards": parse2,
     "columns": parse3,
-    "default-content": parse4
+    "default-content": parse4,
+    "accordion": parse5
   };
   var transformers = [
     transform
@@ -537,7 +604,8 @@ var CustomImportScript = (() => {
         name: "cards",
         instances: [
           'div[class*="CardsGrid__StyledCardsGrid"]',
-          'ol[class*="IconBlock__StyledOl"]'
+          'ol[class*="IconBlock__StyledOl"]',
+          'div[class*="ActionCard__ActionCardOuter"]'
         ]
       },
       {
@@ -603,6 +671,52 @@ var CustomImportScript = (() => {
           }
         } else {
           console.warn(`No parser found for block: ${block.name}`);
+        }
+      });
+      const accordionHeadings = Array.from(main.querySelectorAll("h3 > button, h4 > button")).map((btn) => btn.parentElement).filter((h) => !h.closest("table"));
+      if (accordionHeadings.length > 0) {
+        const groups = [];
+        let currentGroup = [];
+        let currentParent = null;
+        accordionHeadings.forEach((h) => {
+          const parent = h.parentElement;
+          if (parent !== currentParent && currentGroup.length > 0) {
+            groups.push({ parent: currentParent, headings: currentGroup });
+            currentGroup = [];
+          }
+          currentParent = parent;
+          currentGroup.push(h);
+        });
+        if (currentGroup.length > 0) {
+          groups.push({ parent: currentParent, headings: currentGroup });
+        }
+        groups.forEach(({ parent }) => {
+          if (parent && parsers.accordion) {
+            try {
+              parsers.accordion(parent, { document, url, params });
+            } catch (e) {
+              console.error("Failed to parse accordion group:", e);
+            }
+          }
+        });
+      }
+      const messagingBlocks = Array.from(main.querySelectorAll('[class*="vertical-rhythm--messaging"]')).filter((el) => !el.closest("table"));
+      messagingBlocks.forEach((msg) => {
+        const heading = msg.querySelector("h3, h4");
+        const paragraphs = Array.from(msg.querySelectorAll("p"));
+        if (heading || paragraphs.length > 0) {
+          const notice = document.createElement("div");
+          if (heading) {
+            const h = document.createElement(heading.tagName.toLowerCase());
+            h.innerHTML = heading.innerHTML;
+            notice.appendChild(h);
+          }
+          paragraphs.forEach((p) => {
+            const newP = document.createElement("p");
+            newP.innerHTML = p.innerHTML;
+            notice.appendChild(newP);
+          });
+          msg.replaceWith(notice);
         }
       });
       executeTransformers("afterTransform", main, { document, url, html, params });

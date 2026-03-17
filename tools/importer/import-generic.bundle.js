@@ -87,7 +87,9 @@ var CustomImportScript = (() => {
   function parse2(element, { document }) {
     const cells = [];
     const isIconCards = element.matches('ol[class*="IconBlock"]') || !!element.querySelector('ol[class*="IconBlock__StyledOl"]');
-    const isActionCards = element.matches('div[class*="CardsGrid"]') || !!element.querySelector('div[class*="ActionCard__ActionCardOuter"]');
+    const isContactCards = !!element.querySelector('[class*="GenericContactingCard"]');
+    const isLinkCards = !!element.querySelector('[class*="LinkCard__Card"]');
+    const isActionCards = !isContactCards && !isLinkCards && (element.matches('div[class*="CardsGrid"]') || !!element.querySelector('div[class*="ActionCard__ActionCardOuter"]'));
     if (isIconCards) {
       const iconList = element.matches("ol") ? element : element.querySelector('ol[class*="IconBlock"]');
       const items = iconList ? Array.from(iconList.querySelectorAll('li[class*="IconBlock__StyledLiCol"]')) : [];
@@ -156,6 +158,93 @@ var CustomImportScript = (() => {
           textCell.appendChild(p);
         }
         cells.push([imgCell, textCell]);
+      });
+    } else if (isContactCards) {
+      const contactCards = Array.from(
+        element.querySelectorAll('[class*="GenericContactingCard__Card"]')
+      );
+      contactCards.forEach((card) => {
+        const headings = Array.from(card.querySelectorAll("h2, h3, h4"));
+        const paragraphs = Array.from(card.querySelectorAll("p"));
+        const lists = Array.from(card.querySelectorAll("ol, ul"));
+        const links = Array.from(card.querySelectorAll("a[href]"));
+        const textCell = document.createElement("div");
+        headings.forEach((h) => {
+          const text = h.textContent.trim();
+          if (text) {
+            const heading = document.createElement(h.tagName.toLowerCase());
+            heading.textContent = text;
+            textCell.appendChild(heading);
+          }
+        });
+        paragraphs.forEach((p) => {
+          const text = p.textContent.trim();
+          if (text) {
+            const para = document.createElement("p");
+            para.innerHTML = p.innerHTML;
+            textCell.appendChild(para);
+          }
+        });
+        lists.forEach((list) => {
+          const newList = document.createElement(list.tagName.toLowerCase());
+          const items = Array.from(list.querySelectorAll(":scope > li"));
+          items.forEach((li) => {
+            const newLi = document.createElement("li");
+            newLi.innerHTML = li.innerHTML;
+            if (newLi.textContent.trim()) {
+              newList.appendChild(newLi);
+            }
+          });
+          if (newList.children.length > 0) {
+            textCell.appendChild(newList);
+          }
+        });
+        const extractedLinks = /* @__PURE__ */ new Set();
+        textCell.querySelectorAll("a[href]").forEach((a) => extractedLinks.add(a.textContent.trim()));
+        links.forEach((link) => {
+          const text = link.textContent.trim();
+          if (text && !extractedLinks.has(text)) {
+            extractedLinks.add(text);
+            const p = document.createElement("p");
+            const strong = document.createElement("strong");
+            const a = document.createElement("a");
+            a.href = link.href;
+            a.textContent = text;
+            strong.appendChild(a);
+            p.appendChild(strong);
+            textCell.appendChild(p);
+          }
+        });
+        if (textCell.childNodes.length > 0) {
+          cells.push([textCell]);
+        }
+      });
+    } else if (isLinkCards) {
+      const linkCards = Array.from(
+        element.querySelectorAll('[class*="LinkCard__Card"]')
+      );
+      linkCards.forEach((card) => {
+        const heading = card.querySelector("h2, h3");
+        const links = Array.from(card.querySelectorAll("a[href]"));
+        const textCell = document.createElement("div");
+        if (heading) {
+          const h = document.createElement(heading.tagName.toLowerCase());
+          h.textContent = heading.textContent.trim();
+          textCell.appendChild(h);
+        }
+        if (links.length > 0) {
+          const ul = document.createElement("ul");
+          links.forEach((link) => {
+            const li = document.createElement("li");
+            const a = document.createElement("a");
+            a.href = link.href;
+            a.textContent = link.textContent.trim();
+            li.appendChild(a);
+            ul.appendChild(li);
+          });
+          textCell.appendChild(ul);
+        }
+        cells.push([textCell]);
       });
     } else {
       const items = Array.from(element.children);
@@ -394,53 +483,176 @@ var CustomImportScript = (() => {
 
   // tools/importer/parsers/default-content.js
   function parse4(element, { document }) {
-    const wrapper = element.querySelector('div[class*="ContentWithSidebar__ContainerWrapper"]') || element.querySelector('div[class*="ContainerWrapper"]') || element;
     const fragment = document.createDocumentFragment();
-    const heading = wrapper.querySelector("h2") || wrapper.querySelector("h3");
-    if (heading) {
-      const h = document.createElement(heading.tagName.toLowerCase());
-      h.innerHTML = heading.innerHTML;
-      fragment.appendChild(h);
-    }
-    const richTexts = wrapper.querySelectorAll('div[class*="RichText"]');
     const seen = /* @__PURE__ */ new Set();
-    if (richTexts.length > 0) {
-      richTexts.forEach((rt) => {
-        const paragraphs = Array.from(rt.querySelectorAll("p"));
-        paragraphs.forEach((p) => {
-          const text = p.textContent.trim();
-          if (text && !seen.has(text)) {
-            seen.add(text);
+    function walkAndExtract(node) {
+      if (!node || !node.children) return;
+      for (let i = 0; i < node.children.length; i++) {
+        const child = node.children[i];
+        const tag = child.tagName.toLowerCase();
+        const cls = (child.className || "").toString();
+        if (tag === "table" && child.querySelector("th")) {
+          fragment.appendChild(child.cloneNode(true));
+          continue;
+        }
+        if (cls.includes("CardsGrid") || cls.includes("ActionCard") || cls.includes("IconBlock") || cls.includes("SideBySideLayout") || cls.includes("ImageWithContent") || cls.includes("HeroContainer") || child.closest("table")) {
+          continue;
+        }
+        if (cls.includes("vertical-rhythm--messaging") || cls.includes("Message-sc")) {
+          fragment.appendChild(child.cloneNode(true));
+          continue;
+        }
+        if (cls.includes("ButtonGroup") || cls.includes("LinkGroup")) {
+          const links = Array.from(child.querySelectorAll("a[href]"));
+          links.forEach((link) => {
+            const text = link.textContent.trim();
+            if (text && !seen.has("a:" + text)) {
+              seen.add("a:" + text);
+              const p = document.createElement("p");
+              const strong = document.createElement("strong");
+              const a = document.createElement("a");
+              a.href = link.href;
+              a.textContent = text;
+              strong.appendChild(a);
+              p.appendChild(strong);
+              fragment.appendChild(p);
+            }
+          });
+          continue;
+        }
+        if (tag === "h1" || tag === "h2" || tag === "h3" || tag === "h4") {
+          const text = child.textContent.trim();
+          if (text && !seen.has("h:" + text)) {
+            seen.add("h:" + text);
+            const h = document.createElement(tag);
+            h.innerHTML = child.innerHTML;
+            fragment.appendChild(h);
+          }
+        } else if (tag === "p") {
+          const text = child.textContent.trim();
+          if (text && !seen.has("p:" + text)) {
+            seen.add("p:" + text);
             const para = document.createElement("p");
-            para.innerHTML = p.innerHTML;
+            para.innerHTML = child.innerHTML;
             fragment.appendChild(para);
           }
-        });
-      });
-    } else {
-      const paragraphs = Array.from(wrapper.querySelectorAll("p"));
-      paragraphs.forEach((p) => {
-        const text = p.textContent.trim();
-        if (text && !seen.has(text)) {
-          seen.add(text);
-          const para = document.createElement("p");
-          para.innerHTML = p.innerHTML;
-          fragment.appendChild(para);
+        } else if (tag === "ul" || tag === "ol") {
+          const list = document.createElement(tag);
+          const items = Array.from(child.querySelectorAll(":scope > li"));
+          items.forEach((li) => {
+            const newLi = document.createElement("li");
+            const strong = li.querySelector(":scope > strong, :scope > b");
+            const innerLink = li.querySelector("a[href]");
+            if (strong) {
+              const s = document.createElement("strong");
+              s.textContent = strong.textContent.trim();
+              newLi.appendChild(s);
+              const fullText = li.textContent.trim();
+              const boldText = strong.textContent.trim();
+              const idx = fullText.indexOf(boldText);
+              const remaining = idx >= 0 ? fullText.substring(idx + boldText.length).trim() : "";
+              if (remaining) {
+                newLi.appendChild(document.createTextNode(" " + remaining));
+              }
+            } else if (innerLink) {
+              const a = document.createElement("a");
+              a.href = innerLink.href;
+              a.textContent = innerLink.textContent.trim();
+              newLi.appendChild(a);
+            } else {
+              newLi.innerHTML = li.innerHTML;
+            }
+            if (newLi.textContent.trim()) {
+              list.appendChild(newLi);
+            }
+          });
+          if (list.children.length > 0) {
+            fragment.appendChild(list);
+          }
+        } else if (tag === "hr") {
+          fragment.appendChild(document.createElement("hr"));
+        } else if (tag === "a" && child.href) {
+          if (!child.closest("p") && !child.closest("li") && !child.closest("h2") && !child.closest("h3")) {
+            const text = child.textContent.trim();
+            if (text && !seen.has("a:" + text)) {
+              seen.add("a:" + text);
+              const p = document.createElement("p");
+              const a = document.createElement("a");
+              a.href = child.href;
+              a.textContent = text;
+              p.appendChild(a);
+              fragment.appendChild(p);
+            }
+          }
+        } else {
+          walkAndExtract(child);
         }
-      });
+      }
     }
-    const links = Array.from(wrapper.querySelectorAll("a[href]"));
-    links.forEach((link) => {
-      if (!link.closest("p") && !link.closest("h2") && !link.closest("h3")) {
-        const p = document.createElement("p");
-        const a = document.createElement("a");
-        a.href = link.href;
-        a.textContent = link.textContent.trim();
-        p.appendChild(a);
-        fragment.appendChild(p);
+    walkAndExtract(element);
+    if (fragment.childNodes.length > 0) {
+      element.replaceWith(fragment);
+    }
+  }
+
+  // tools/importer/parsers/accordion.js
+  function parse5(element, { document }) {
+    const cells = [];
+    const headings = Array.from(element.querySelectorAll("h3, h4")).filter(
+      (h) => h.querySelector("button")
+    );
+    headings.forEach((heading) => {
+      const button = heading.querySelector("button");
+      const labelCell = document.createElement("div");
+      const labelText = button.textContent.trim();
+      const p = document.createElement("p");
+      p.textContent = labelText;
+      labelCell.appendChild(p);
+      const bodyCell = document.createElement("div");
+      let nextEl = heading.nextElementSibling;
+      while (nextEl) {
+        if ((nextEl.tagName === "H3" || nextEl.tagName === "H4") && nextEl.querySelector("button")) {
+          break;
+        }
+        const paragraphs = nextEl.querySelectorAll("p");
+        const lists = nextEl.querySelectorAll("ul, ol");
+        const links = nextEl.querySelectorAll("a[href]");
+        if (paragraphs.length > 0) {
+          paragraphs.forEach((para) => {
+            const newP = document.createElement("p");
+            newP.innerHTML = para.innerHTML;
+            bodyCell.appendChild(newP);
+          });
+        } else if (lists.length > 0) {
+          lists.forEach((list) => {
+            const newList = document.createElement(list.tagName.toLowerCase());
+            Array.from(list.querySelectorAll("li")).forEach((li) => {
+              const newLi = document.createElement("li");
+              newLi.innerHTML = li.innerHTML;
+              newList.appendChild(newLi);
+            });
+            bodyCell.appendChild(newList);
+          });
+        } else if (nextEl.textContent.trim()) {
+          const newP = document.createElement("p");
+          newP.textContent = nextEl.textContent.trim();
+          bodyCell.appendChild(newP);
+        }
+        nextEl = nextEl.nextElementSibling;
+      }
+      if (labelText && bodyCell.childNodes.length > 0) {
+        cells.push([labelCell, bodyCell]);
+      } else if (labelText) {
+        const emptyBody = document.createElement("div");
+        const placeholder = document.createElement("p");
+        placeholder.textContent = "(Content available on source page)";
+        emptyBody.appendChild(placeholder);
+        cells.push([labelCell, emptyBody]);
       }
     });
-    element.replaceWith(fragment);
+    if (cells.length === 0) return;
+    const block = WebImporter.Blocks.createBlock(document, { name: "Accordion", cells });
+    element.replaceWith(block);
   }
 
   // tools/importer/transformers/nationwide-cleanup.js
@@ -455,7 +667,13 @@ var CustomImportScript = (() => {
         ".onetrust-pc-dark-filter"
       ]);
       WebImporter.DOMUtils.remove(element, [
-        'header[class*="BaseHeader"]'
+        "header"
+      ]);
+      WebImporter.DOMUtils.remove(element, [
+        'div[class*="globalNavigation"]',
+        'div[class*="SkipLinks"]',
+        'div[class*="searchBox"]',
+        'nav[class*="loginFlyout"]'
       ]);
       WebImporter.DOMUtils.remove(element, [
         "#footer",
@@ -510,7 +728,8 @@ var CustomImportScript = (() => {
     "hero": parse,
     "cards": parse2,
     "columns": parse3,
-    "default-content": parse4
+    "default-content": parse4,
+    "accordion": parse5
   };
   var transformers = [
     transform
@@ -532,7 +751,8 @@ var CustomImportScript = (() => {
         instances: [
           'div[class*="CardsGrid__StyledCardsGrid"]',
           'ol[class*="IconBlock__StyledOl"]',
-          'div[class*="ActionCard__ActionCardOuter"]'
+          'div[class*="ActionCard__ActionCardOuter"]',
+          'div[class*="vertical-rhythm--card"][class*="CardsGrid"]'
         ]
       },
       {
@@ -545,7 +765,8 @@ var CustomImportScript = (() => {
       {
         name: "default-content",
         instances: [
-          'div[class*="ContentWithSidebar__ContentWithSideBarGrid"]'
+          'div[class*="ContentWithSidebar__ContentWithSideBarGrid"]',
+          'div[class*="FullWidthLayout__ContainerWrapper"]'
         ]
       }
     ]
@@ -598,6 +819,52 @@ var CustomImportScript = (() => {
           }
         } else {
           console.warn(`No parser found for block: ${block.name}`);
+        }
+      });
+      const accordionHeadings = Array.from(main.querySelectorAll("h3 > button, h4 > button")).map((btn) => btn.parentElement).filter((h) => !h.closest("table"));
+      if (accordionHeadings.length > 0) {
+        const groups = [];
+        let currentGroup = [];
+        let currentParent = null;
+        accordionHeadings.forEach((h) => {
+          const parent = h.parentElement;
+          if (parent !== currentParent && currentGroup.length > 0) {
+            groups.push({ parent: currentParent, headings: currentGroup });
+            currentGroup = [];
+          }
+          currentParent = parent;
+          currentGroup.push(h);
+        });
+        if (currentGroup.length > 0) {
+          groups.push({ parent: currentParent, headings: currentGroup });
+        }
+        groups.forEach(({ parent }) => {
+          if (parent && parsers.accordion) {
+            try {
+              parsers.accordion(parent, { document, url, params });
+            } catch (e) {
+              console.error("Failed to parse accordion group:", e);
+            }
+          }
+        });
+      }
+      const messagingBlocks = Array.from(main.querySelectorAll('[class*="vertical-rhythm--messaging"]')).filter((el) => !el.closest("table"));
+      messagingBlocks.forEach((msg) => {
+        const heading = msg.querySelector("h3, h4");
+        const paragraphs = Array.from(msg.querySelectorAll("p"));
+        if (heading || paragraphs.length > 0) {
+          const notice = document.createElement("div");
+          if (heading) {
+            const h = document.createElement(heading.tagName.toLowerCase());
+            h.innerHTML = heading.innerHTML;
+            notice.appendChild(h);
+          }
+          paragraphs.forEach((p) => {
+            const newP = document.createElement("p");
+            newP.innerHTML = p.innerHTML;
+            notice.appendChild(newP);
+          });
+          msg.replaceWith(notice);
         }
       });
       executeTransformers("afterTransform", main, { document, url, html, params });

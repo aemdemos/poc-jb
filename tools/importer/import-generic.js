@@ -6,6 +6,7 @@ import heroParser from './parsers/hero.js';
 import cardsParser from './parsers/cards.js';
 import columnsParser from './parsers/columns.js';
 import defaultContentParser from './parsers/default-content.js';
+import accordionParser from './parsers/accordion.js';
 
 // TRANSFORMER IMPORTS
 import nationwideCleanupTransformer from './transformers/nationwide-cleanup.js';
@@ -16,6 +17,7 @@ const parsers = {
   'cards': cardsParser,
   'columns': columnsParser,
   'default-content': defaultContentParser,
+  'accordion': accordionParser,
 };
 
 // TRANSFORMER REGISTRY
@@ -42,6 +44,7 @@ const PAGE_TEMPLATE = {
         'div[class*="CardsGrid__StyledCardsGrid"]',
         'ol[class*="IconBlock__StyledOl"]',
         'div[class*="ActionCard__ActionCardOuter"]',
+        'div[class*="vertical-rhythm--card"][class*="CardsGrid"]',
       ],
     },
     {
@@ -55,6 +58,7 @@ const PAGE_TEMPLATE = {
       name: 'default-content',
       instances: [
         'div[class*="ContentWithSidebar__ContentWithSideBarGrid"]',
+        'div[class*="FullWidthLayout__ContainerWrapper"]',
       ],
     },
   ],
@@ -136,17 +140,74 @@ export default {
       }
     });
 
-    // 4. Execute afterTransform transformers (final cleanup)
+    // 4. Post-process: detect accordion patterns (h3/h4 > button)
+    const accordionHeadings = Array.from(main.querySelectorAll('h3 > button, h4 > button'))
+      .map((btn) => btn.parentElement)
+      .filter((h) => !h.closest('table'));
+
+    if (accordionHeadings.length > 0) {
+      const groups = [];
+      let currentGroup = [];
+      let currentParent = null;
+
+      accordionHeadings.forEach((h) => {
+        const parent = h.parentElement;
+        if (parent !== currentParent && currentGroup.length > 0) {
+          groups.push({ parent: currentParent, headings: currentGroup });
+          currentGroup = [];
+        }
+        currentParent = parent;
+        currentGroup.push(h);
+      });
+      if (currentGroup.length > 0) {
+        groups.push({ parent: currentParent, headings: currentGroup });
+      }
+
+      groups.forEach(({ parent }) => {
+        if (parent && parsers.accordion) {
+          try {
+            parsers.accordion(parent, { document, url, params });
+          } catch (e) {
+            console.error('Failed to parse accordion group:', e);
+          }
+        }
+      });
+    }
+
+    // 5. Post-process: convert messaging/notice blocks
+    const messagingBlocks = Array.from(main.querySelectorAll('[class*="vertical-rhythm--messaging"]'))
+      .filter((el) => !el.closest('table'));
+
+    messagingBlocks.forEach((msg) => {
+      const heading = msg.querySelector('h3, h4');
+      const paragraphs = Array.from(msg.querySelectorAll('p'));
+      if (heading || paragraphs.length > 0) {
+        const notice = document.createElement('div');
+        if (heading) {
+          const h = document.createElement(heading.tagName.toLowerCase());
+          h.innerHTML = heading.innerHTML;
+          notice.appendChild(h);
+        }
+        paragraphs.forEach((p) => {
+          const newP = document.createElement('p');
+          newP.innerHTML = p.innerHTML;
+          notice.appendChild(newP);
+        });
+        msg.replaceWith(notice);
+      }
+    });
+
+    // 6. Execute afterTransform transformers (final cleanup)
     executeTransformers('afterTransform', main, { document, url, html, params });
 
-    // 5. Apply WebImporter built-in rules
+    // 7. Apply WebImporter built-in rules
     const hr = document.createElement('hr');
     main.appendChild(hr);
     WebImporter.rules.createMetadata(main, document);
     WebImporter.rules.transformBackgroundImages(main, document);
     WebImporter.rules.adjustImageUrls(main, url, params.originalURL);
 
-    // 6. Generate sanitized path
+    // 8. Generate sanitized path
     const path = WebImporter.FileUtils.sanitizePath(
       new URL(params.originalURL).pathname.replace(/\/$/, '').replace(/\.html$/, ''),
     );

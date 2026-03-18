@@ -2,7 +2,9 @@
   "templates": [
     {
       "name": "homepage",
-      "urls": ["https://www.nationwide.co.uk"],
+      "urls": [
+        "https://www.nationwide.co.uk"
+      ],
       "description": "Nationwide Building Society homepage with hero banner, product navigation cards, feature cards, call checker, internet banking, service quality rankings, and APP scams data",
       "blocks": [
         {
@@ -21,7 +23,7 @@
         {
           "name": "columns",
           "instances": [
-            "div[class*=\"ImageWithContent__StyledContentArea\"]",
+            "div[class*=\"vertical-rhythm--image-with-content\"]",
             "div[class*=\"SideBySideLayout__SideBySideGrid\"]"
           ]
         },
@@ -30,7 +32,7 @@
           "instances": [
             "div[class*=\"ContentWithSidebar__ContentWithSideBarGrid\"]"
           ],
-          "section": "isq"
+          "section": "narrow-text"
         }
       ],
       "sections": {
@@ -62,12 +64,15 @@
           "name": "cards",
           "instances": [
             "div[class*=\"CardsGrid__StyledCardsGrid\"]",
-            "ol[class*=\"IconBlock__StyledOl\"]"
+            "ol[class*=\"IconBlock__StyledOl\"]",
+            "div[class*=\"ActionCard__ActionCardOuter\"]"
           ]
         },
         {
           "name": "columns",
           "instances": [
+            "div[class*=\"vertical-rhythm--image-with-content\"]",
+            "div[class*=\"SideBySideLayout__SideBySideGrid\"]"
             "div[class*=\"ImageWithContent__StyledContentArea\"]",
             "div[class*=\"SideBySideLayout__SideBySideGrid\"]",
             "div[class*=\"ContentWithSidebar__ContentWithSideBarGrid\"]:has(img)"
@@ -334,11 +339,27 @@
             "div[class*=\"GenericContactingCard\"]"
           ]
         }
+      ],
+      "urls": [
+        "https://www.nationwide.co.uk/current-accounts/flexdirect",
+        "https://www.nationwide.co.uk/mortgages/first-time-buyers",
+        "https://www.nationwide.co.uk/savings",
+        "https://www.nationwide.co.uk/current-accounts",
+        "https://www.nationwide.co.uk/current-accounts/flexplus/travel-insurance",
+        "https://www.nationwide.co.uk/current-accounts/flexaccount",
+        "https://www.nationwide.co.uk/current-accounts/flexbasic",
+        "https://www.nationwide.co.uk/current-accounts/flexone",
+        "https://www.nationwide.co.uk/current-accounts/flexplus",
+        "https://www.nationwide.co.uk/current-accounts/flexstudent",
+        "https://www.nationwide.co.uk/current-accounts/overdrafts",
+        "https://www.nationwide.co.uk/current-accounts/switch"
       ]
     },
     {
       "name": "generic",
-      "urlPatterns": ["https://www.nationwide.co.uk/"],
+      "urlPatterns": [
+        "https://www.nationwide.co.uk/"
+      ],
       "description": "Fallback template for any Nationwide page. Uses the same component library — hero, cards, columns, and default content blocks. Applied when no specific template matches.",
       "blocks": [
         {
@@ -353,22 +374,46 @@
           "instances": [
             "div[class*=\"CardsGrid__StyledCardsGrid\"]",
             "ol[class*=\"IconBlock__StyledOl\"]",
-            "div[class*=\"ActionCard__ActionCardOuter\"]"
+            "div[class*=\"ActionCard__ActionCardOuter\"]",
+            "div[class*=\"vertical-rhythm--card\"][class*=\"CardsGrid\"]"
           ]
         },
         {
           "name": "columns",
           "instances": [
-            "div[class*=\"ImageWithContent__StyledContentArea\"]",
+            "div[class*=\"vertical-rhythm--image-with-content\"]",
             "div[class*=\"SideBySideLayout__SideBySideGrid\"]"
           ]
         },
         {
           "name": "default-content",
           "instances": [
-            "div[class*=\"ContentWithSidebar__ContentWithSideBarGrid\"]"
+            "div[class*=\"ContentWithSidebar__ContentWithSideBarGrid\"]",
+            "div[class*=\"FullWidthLayout__ContainerWrapper\"]"
           ]
         }
+      ],
+      "urls": [
+        "https://www.nationwide.co.uk/help/payments/send-money-to-another-account",
+        "https://www.nationwide.co.uk/help/online-banking-help/using-a-card-reader",
+        "https://www.nationwide.co.uk/help/third-party-access/manage-the-donors-money-using-the-internet-bank",
+        "https://www.nationwide.co.uk/news-and-stories/travel-holiday-scams",
+        "https://www.nationwide.co.uk/help/managing-your-money",
+        "https://www.nationwide.co.uk/mortgages/first-time-buyers/guide",
+        "https://www.nationwide.co.uk/about-us/cookies-privacy/cookies",
+        "https://www.nationwide.co.uk/about-us/branch-promise",
+        "https://www.nationwide.co.uk/about-us/fairer-share",
+        "https://www.nationwide.co.uk/about-us/for-the-good-of-society",
+        "https://www.nationwide.co.uk/about-us/for-the-good-of-society/fairer-futures-charity-partners",
+        "https://www.nationwide.co.uk/about-us/governance-reports-and-results",
+        "https://www.nationwide.co.uk/about-us/governance-reports-and-results/results-and-accounts",
+        "https://www.nationwide.co.uk/about-us/greener-homes",
+        "https://www.nationwide.co.uk/about-us/have-your-say",
+        "https://www.nationwide.co.uk/about-us/inclusion-and-diversity",
+        "https://www.nationwide.co.uk/about-us/responsible-business",
+        "https://www.nationwide.co.uk/about-us/what-membership-means",
+        "https://www.nationwide.co.uk/about-us/why-bank-with-us",
+        "https://www.nationwide.co.uk/current-accounts/help/change-current-account"
       ]
     }
   ]

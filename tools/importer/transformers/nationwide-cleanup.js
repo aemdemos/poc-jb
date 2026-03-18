@@ -33,9 +33,19 @@ export default function transform(hookName, element, payload) {
     ]);
 
     // Remove header/navigation (handled separately, not block content)
-    // EXTRACTED: Found <header class="BaseHeader-sc-1tv9xrx-0"> in cleaned.html line 6
+    // NOTE: Nationwide changed header class from BaseHeader to BaseMasthead.
+    // Using generic 'header' tag for robustness against future class changes.
+    // All search, login, and mobile navigation drawers are children of <header>.
     WebImporter.DOMUtils.remove(element, [
-      'header[class*="BaseHeader"]',
+      'header',
+    ]);
+
+    // Remove global navigation background and skip links (siblings of header)
+    WebImporter.DOMUtils.remove(element, [
+      'div[class*="globalNavigation"]',
+      'div[class*="SkipLinks"]',
+      'div[class*="searchBox"]',
+      'nav[class*="loginFlyout"]',
     ]);
 
     // Remove footer (handled separately, not block content)

@@ -29,14 +29,15 @@
  * Note: ContentWithSidebar pattern is now handled by default-content.js
  * as it maps to EDS default content with section metadata, not a block.
  *
- * Updated: 2026-03-04
+ * Updated: 2026-03-13
  */
 export default function parse(element, { document }) {
   const cells = [];
 
   // Detect which column pattern
   const isImageWithContent = !!element.querySelector('div[class*="ImageWithContent__StyledImageArea"]')
-    || element.matches('div[class*="ImageWithContent"]');
+    || element.matches('div[class*="ImageWithContent"]')
+    || element.matches('div[class*="vertical-rhythm--image-with-content"]');
   const isSideBySide = element.matches('div[class*="SideBySideLayout__SideBySideGrid"]')
     || !!element.querySelector('div[class*="SideBySideLayout__SideBySideGrid"]');
 
@@ -273,25 +274,44 @@ export default function parse(element, { document }) {
     const hasImages = !!element.querySelector('img');
     const hasHeadings = !!element.querySelector('h2, h3');
 
+    // Count links across all columns — many links indicates link-list style
+    const allLinks = element.querySelectorAll('a[href]');
+    const linkCount = allLinks.length;
+
+    // Check for colored background on parent container (boxed variant)
+    // Nationwide uses VerticalSpacer divs with background colors for boxed sections
+    let hasColoredBg = false;
+    const parentSpacer = element.closest('div[class*="VerticalSpacer"]') || element.parentElement;
+    if (parentSpacer && typeof getComputedStyle !== 'undefined') {
+      try {
+        const bg = getComputedStyle(parentSpacer).backgroundColor;
+        if (bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') {
+          const rgbMatch = bg.match(/\d+/g);
+          if (rgbMatch) {
+            const [r, g, b] = rgbMatch.map(Number);
+            // Non-white, non-transparent background → colored section
+            if (r < 250 || g < 250 || b < 250) {
+              hasColoredBg = true;
+            }
+          }
+        }
+      } catch (e) { /* getComputedStyle may not be available in all contexts */ }
+    }
+
     if (hasSearch) {
       blockName = 'Columns (boxed, search)';
+    } else if (hasColoredBg && hasHeadings) {
+      // Colored background section with headings → boxed variant (e.g., "Why bank with us")
+      blockName = 'Columns (boxed)';
+    } else if (hasHeadings && !hasImages && linkCount >= 6) {
+      // Many links + headings + no images → link-list card style (e.g., "Other Nationwide info")
+      blockName = 'Columns (boxed, plain)';
     } else if (hasHeadings && !hasImages) {
       blockName = 'Columns (text-links)';
     }
   } else if (isImageWithContent) {
-    // Check if parent section has dark background styling
-    const parentSection = element.closest('[class*="VerticalSpacer"]') || element.parentElement;
-    const bgColor = parentSection
-      ? getComputedStyle(parentSection).backgroundColor
-      : '';
-    // Dark sections detected by very low RGB values in background
-    if (bgColor && bgColor !== 'rgba(0, 0, 0, 0)') {
-      const match = bgColor.match(/\d+/g);
-      if (match && parseInt(match[0], 10) < 30 && parseInt(match[2], 10) < 80) {
-        // Dark background — will need section metadata style: dark
-        // Block name stays "Columns" — the dark styling comes from the section
-      }
-    }
+    // ImageWithContent variant detection — dark styling comes from section metadata
+    // Block name stays "Columns" — the dark styling is applied via section wrapper
   }
 
   // Create block using WebImporter utility

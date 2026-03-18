@@ -17,7 +17,6 @@
   background-color: var(--color-navy);
   color: var(--color-white);
   padding: var(--spacing-s) var(--spacing-s) var(--spacing-l);
-  min-height: 320px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -43,7 +42,7 @@
   max-width: 100%;
 }
 
-/* Row 3 - switch guarantee image (appended by JS) */
+/* Row 3 - switch guarantee image (authored, homepage only) */
 .hero > div:last-child:nth-child(3) {
   display: flex;
   justify-content: center;
@@ -79,6 +78,49 @@
   margin: var(--spacing-s) 0;
 }
 
+/* Breadcrumb navigation - inside hero, above heading */
+.hero .hero-breadcrumb {
+  margin-bottom: 24px;
+}
+
+.hero .hero-breadcrumb ol {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: 0;
+  flex-wrap: wrap;
+}
+
+.hero .hero-breadcrumb ol li {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  line-height: 28px;
+}
+
+.hero .hero-breadcrumb ol li a {
+  color: var(--color-white);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.hero .hero-breadcrumb ol li a:hover {
+  color: var(--color-blue-accent);
+}
+
+/* Chevron after every breadcrumb item */
+.hero .hero-breadcrumb ol li::after {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-right: 1.5px solid var(--color-white);
+  border-top: 1.5px solid var(--color-white);
+  transform: rotate(45deg);
+  margin: 0 10px;
+  opacity: 0.8;
 /* Override global strong navy color — must be white on navy hero background */
 .hero strong {
   color: inherit;
@@ -105,18 +147,31 @@
 
 /* CTA button - white on navy, full width on mobile */
 .hero a.button:any-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 40px;
+  padding: 6px 24px;
+  border: 2px solid transparent;
+  border-radius: 4px;
   background-color: var(--color-white);
   color: var(--color-navy);
-  border-color: transparent;
   font-size: var(--body-font-size-s);
   font-weight: 700;
-  width: 100%;
-  box-sizing: border-box;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: box-shadow 0.2s;
 }
 
 .hero a.button:hover,
 .hero a.button:focus {
   box-shadow: 0 0 0 4px var(--color-hover-ring);
+  text-decoration: none;
 }
 
 /* Tablet: badge on top, full-width text, guarantee on its own row */
@@ -126,7 +181,6 @@
     grid-template-columns: 1fr auto;
     grid-template-rows: auto 1fr auto;
     padding: 24px 48px;
-    min-height: 400px;
     gap: 0 var(--spacing-m);
   }
 
@@ -190,11 +244,11 @@
   .hero {
     grid-template-columns: 2fr 1fr;
     grid-template-rows: 1fr auto;
-    padding: var(--spacing-xl) 90px;
-    min-height: 420px;
+    padding: 0 90px;
     gap: 0 var(--spacing-l);
     max-width: var(--content-max-width);
     margin: 0 auto;
+    align-items: center;
   }
 
   /* Badge moves to right column, top row */
@@ -204,10 +258,18 @@
     margin-bottom: 0;
   }
 
-  /* Text on left, spanning both rows */
+  /* Text on left, spanning both rows — vertical padding on text, not hero */
   .hero > div:nth-child(2) {
     grid-column: 1;
     grid-row: 1 / -1;
+    padding: var(--spacing-xl) 0;
+  }
+
+  /* Text-only hero (no image) — keep text on left at 2/3 width */
+  .hero > div:only-child {
+    grid-column: 1;
+    grid-row: 1 / -1;
+    padding: var(--spacing-xl) 0;
   }
 
   /* Guarantee absolutely positioned at bottom-right, same line as button */

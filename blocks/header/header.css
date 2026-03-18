@@ -944,55 +944,6 @@ header nav[aria-expanded='true'] .nav-sections .nav-sections-utilities ul li a .
   }
 }
 
-/* ==========================================================================
-   BREADCRUMBS
-   ========================================================================== */
-
-header .breadcrumbs {
-  display: none;
-  margin: auto;
-  max-width: var(--content-max-width);
-  height: 34px;
-  padding: 0 var(--spacing-m);
-  font-size: 14px;
-  overflow: hidden;
-  background-color: var(--color-white);
-  align-items: center;
-}
-
-header .breadcrumbs ol {
-  display: flex;
-  flex-flow: wrap;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  gap: 1ch;
-}
-
-/* stylelint-disable-next-line no-descending-specificity */
-header .breadcrumbs ol li {
-  padding: 0;
-  color: var(--color-gray);
-}
-
-header .breadcrumbs ol li:not(:last-child)::after {
-  content: '/';
-  padding-left: 1ch;
-}
-
-/* stylelint-disable-next-line no-descending-specificity */
-header .breadcrumbs ol li[aria-current] {
-  color: var(--color-navy);
-}
-
-@media (width >= 900px) {
-  header .breadcrumbs {
-    display: flex;
-    max-width: var(--content-max-width);
-    padding: 0 32px;
-    box-sizing: content-box;
-  }
-}
 
 /* ==========================================================================
    BODY SCROLL LOCK WHEN MOBILE MENU IS OPEN

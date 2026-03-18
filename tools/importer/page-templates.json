@@ -52,7 +52,7 @@
         "https://www.nationwide.co.uk/credit-cards",
         "https://www.nationwide.co.uk/insurance"
       ],
-      "description": "Product landing pages with hero, product cards grid, feature sections, and help/FAQ area. Common pattern: Hero → promo panel → product card grid → feature columns → more cards → help section → footnotes",
+      "description": "Product landing pages with hero, product cards grid, feature sections, and help/FAQ area. Common pattern: Hero → promo Columns (light) → Cards grid → feature Columns (light) → Cards grid → feature Columns (light) → Cards grid → default content → help links → FSCS Columns → footnotes",
       "blocks": [
         {
           "name": "hero",
@@ -73,12 +73,270 @@
           "instances": [
             "div[class*=\"vertical-rhythm--image-with-content\"]",
             "div[class*=\"SideBySideLayout__SideBySideGrid\"]"
+            "div[class*=\"ImageWithContent__StyledContentArea\"]",
+            "div[class*=\"SideBySideLayout__SideBySideGrid\"]",
+            "div[class*=\"ContentWithSidebar__ContentWithSideBarGrid\"]:has(img)"
+          ]
+        },
+        {
+          "name": "default-content",
+          "instances": [
+            "div[class*=\"ContentWithSidebar__ContentWithSideBarGrid\"]:not(:has(img))"
+          ]
+        }
+      ],
+      "sectionStyles": {
+        "light": "Applied to Columns sections with award badges, promo panels, and feature highlights",
+        "footnote": "Applied to SmallPrint disclaimer section at page bottom"
+      }
+    },
+    {
+      "name": "product-detail",
+      "urlPatterns": [
+        "https://www.nationwide.co.uk/current-accounts/flexdirect",
+        "https://www.nationwide.co.uk/current-accounts/flexplus",
+        "https://www.nationwide.co.uk/current-accounts/flexaccount",
+        "https://www.nationwide.co.uk/current-accounts/flexstudent",
+        "https://www.nationwide.co.uk/current-accounts/flexone",
+        "https://www.nationwide.co.uk/current-accounts/flexbasic",
+        "https://www.nationwide.co.uk/savings/*",
+        "https://www.nationwide.co.uk/mortgages/*",
+        "https://www.nationwide.co.uk/loans/*",
+        "https://www.nationwide.co.uk/credit-cards/*",
+        "https://www.nationwide.co.uk/insurance/*"
+      ],
+      "description": "Product detail pages with hero, feature sections (columns + accordion), comparison tables, and help links. Common pattern: Hero → promo Columns (light) + Accordion → feature Columns (dark) → award Columns (light) → icon Cards → Table (striped) → document links → CTA Columns (dark) → comparison Table (striped) → Columns (light) → Cards → FSCS Columns → footnotes",
+      "blocks": [
+        {
+          "name": "hero",
+          "instances": [
+            "div[class*=\"StyledCompoenents__HeroContainerInner\"]"
+          ]
+        },
+        {
+          "name": "accordion",
+          "instances": [
+            "div[class*=\"nel-Accordion\"]",
+            "[class*=\"Accordion__StyledAccordion\"]"
+          ]
+        },
+        {
+          "name": "cards",
+          "instances": [
+            "ol[class*=\"IconBlock__StyledOl\"]",
+            "div[class*=\"CardsGrid__StyledCardsGrid\"]",
+            "div[class*=\"LinkCard__Card\"]"
+          ]
+        },
+        {
+          "name": "columns",
+          "instances": [
+            "div[class*=\"ImageWithContent__StyledContentArea\"]",
+            "div[class*=\"SideBySideLayout__SideBySideGrid\"]",
+            "div[class*=\"ContentWithSidebar__ContentWithSideBarGrid\"]:has(img)"
+          ]
+        },
+        {
+          "name": "table",
+          "instances": [
+            "table[class*=\"SimpleTable\"]",
+            "div[class*=\"CurrentAccountsTable\"]",
+            "div[class*=\"ComparisonTable\"]"
+          ]
+        },
+        {
+          "name": "default-content",
+          "instances": [
+            "div[class*=\"ContentWithSidebar__ContentWithSideBarGrid\"]:not(:has(img))",
+            "div[class*=\"SmallPrint\"]"
+          ]
+        }
+      ],
+      "sectionStyles": {
+        "light": "Applied to Columns sections with award badges, promo panels, and feature highlights",
+        "dark": "Applied to feature list sections and full-width CTA sections",
+        "footnote": "Applied to SmallPrint disclaimer sections"
+      }
+    },
+    {
+      "name": "help-hub",
+      "urls": ["https://www.nationwide.co.uk/help"],
+      "description": "Help hub page with text-only hero and grid of 18 category link cards. Each card has heading + topic links + 'see all' footer link. Simple structure: Hero → Cards grid → Metadata",
+      "blocks": [
+        {
+          "name": "hero",
+          "instances": [
+            "div[class*=\"StyledCompoenents__HeroContainerInner\"]"
+          ]
+        },
+        {
+          "name": "cards",
+          "instances": [
+            "div[class*=\"CardsGrid\"]",
+            "section[class*=\"LinkCard__Card\"]"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "guide-page",
+      "urlPatterns": [
+        "https://www.nationwide.co.uk/mortgages/first-time-buyers",
+        "https://www.nationwide.co.uk/mortgages/remortgaging",
+        "https://www.nationwide.co.uk/mortgages/moving-home",
+        "https://www.nationwide.co.uk/mortgages/buy-to-let",
+        "https://www.nationwide.co.uk/savings/help-and-guidance/*",
+        "https://www.nationwide.co.uk/current-accounts/guide-to-*"
+      ],
+      "description": "Guide/information pages with hero, side-by-side content columns with tick lists, important notices, icon-nav cards for related topics, image+content columns, and FAQ accordion. Common pattern: Hero → intro + Columns (tick lists + CTAs) + notice → Cards/Columns on light bg → icon-nav Cards → image Columns → FAQ Accordion → Metadata",
+      "blocks": [
+        {
+          "name": "hero",
+          "instances": [
+            "div[class*=\"StyledCompoenents__HeroContainerInner\"]"
+          ]
+        },
+        {
+          "name": "accordion",
+          "instances": [
+            "div[class*=\"nel-Accordion\"]",
+            "[class*=\"Accordion__StyledAccordion\"]"
+          ]
+        },
+        {
+          "name": "cards",
+          "instances": [
+            "ol[class*=\"IconBlock__StyledOl\"]",
+            "div[class*=\"CardsGrid__StyledCardsGrid\"]"
+          ]
+        },
+        {
+          "name": "columns",
+          "instances": [
+            "div[class*=\"ImageWithContent__StyledContentArea\"]",
+            "div[class*=\"SideBySideLayout__SideBySideGrid\"]",
+            "div[class*=\"RegulatoryBlock__StyledGrid\"]",
+            "div[class*=\"ContentWithSidebar__ContentWithSideBarGrid\"]:has(img)"
+          ]
+        },
+        {
+          "name": "default-content",
+          "instances": [
+            "div[class*=\"ContentWithSidebar__ContentWithSideBarGrid\"]:not(:has(img))",
+            "div[class*=\"NelComponents__Message\"]"
+          ]
+        }
+      ],
+      "sectionStyles": {
+        "light": "Applied to sections with grey/alternate background (e.g., Ready to buy section)"
+      }
+    },
+    {
+      "name": "news-listing",
+      "urls": ["https://www.nationwide.co.uk/news-and-stories"],
+      "description": "News and stories listing page with hero and grid of article cards. Each card has image, title, date, description, and CTA link. Includes a bottom promo section. Common pattern: Hero → Cards grid (27+ article cards) → promo section → Metadata",
+      "blocks": [
+        {
+          "name": "hero",
+          "instances": [
+            "div[class*=\"StyledCompoenents__HeroContainerInner\"]"
+          ]
+        },
+        {
+          "name": "cards",
+          "instances": [
+            "div[class*=\"ActionCard__ActionCardOuter\"]",
+            "div[class*=\"CardsGrid__StyledCardsGrid\"]"
           ]
         },
         {
           "name": "default-content",
           "instances": [
             "div[class*=\"ContentWithSidebar__ContentWithSideBarGrid\"]"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "corporate-hub",
+      "urls": ["https://www.nationwide.co.uk/about-us"],
+      "description": "Corporate hub page with hero, intro text, image action cards grid, side-by-side columns with images, and link list columns. Common pattern: Hero → intro default content + Cards (3-col image cards) → Columns (2-col image+content) → Cards (3-col image cards) → Columns (2-col text link lists) → Metadata",
+      "blocks": [
+        {
+          "name": "hero",
+          "instances": [
+            "div[class*=\"StyledCompoenents__HeroContainerInner\"]"
+          ]
+        },
+        {
+          "name": "cards",
+          "instances": [
+            "div[class*=\"ActionCard__ActionCardOuter\"]",
+            "div[class*=\"CardsGrid__StyledCardsGrid\"]"
+          ]
+        },
+        {
+          "name": "columns",
+          "instances": [
+            "div[class*=\"SideBySideLayout__SideBySideGrid\"]",
+            "div[class*=\"ContentWithSidebar__ContentWithSideBarGrid\"]"
+          ]
+        },
+        {
+          "name": "default-content",
+          "instances": [
+            "div[class*=\"ContentWithSidebar__ContentWithSideBarGrid\"]:not(:has(img)):not(:has(a))"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mixed-hub",
+      "urls": ["https://www.nationwide.co.uk/ways-to-bank"],
+      "description": "Mixed hub page combining hero, blockquote notice, image action cards, and long-form default content sections. Common pattern: Hero → blockquote notice → Cards (image cards with CTAs) → default content sections (H2/H3 with paragraphs, links, lists) → Metadata",
+      "blocks": [
+        {
+          "name": "hero",
+          "instances": [
+            "div[class*=\"StyledCompoenents__HeroContainerInner\"]"
+          ]
+        },
+        {
+          "name": "cards",
+          "instances": [
+            "div[class*=\"ActionCard__ActionCardOuter\"]",
+            "div[class*=\"CardsGrid__StyledCardsGrid\"]"
+          ]
+        },
+        {
+          "name": "default-content",
+          "instances": [
+            "div[class*=\"ContentWithSidebar__ContentWithSideBarGrid\"]",
+            "div[class*=\"NelComponents__Message\"]"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "help-article",
+      "urlPatterns": [
+        "https://www.nationwide.co.uk/help/*/*"
+      ],
+      "description": "Help article pages with text-only hero and long-form default content body. Content is primarily headings (H2/H3), paragraphs, bullet/numbered lists, inline links, CTA links, blockquote notices, and a related links section. Common pattern: Hero → article body (H2 sections separated by horizontal rules) → Related links → Metadata",
+      "blocks": [
+        {
+          "name": "hero",
+          "instances": [
+            "div[class*=\"StyledCompoenents__HeroContainerInner\"]"
+          ]
+        },
+        {
+          "name": "default-content",
+          "instances": [
+            "div[class*=\"GuideLayout__StyledContentArea\"]",
+            "div[class*=\"ContentWithSidebar__ContentWithSideBarGrid\"]",
+            "div[class*=\"NelComponents__Message\"]",
+            "div[class*=\"GenericContactingCard\"]"
           ]
         }
       ],

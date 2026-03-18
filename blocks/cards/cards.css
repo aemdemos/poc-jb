@@ -17,11 +17,13 @@
 
 .cards .cards-card-image {
   line-height: 0;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
 }
 
 .cards > ul > li img {
   width: 100%;
-  height: auto;
+  height: 100%;
   object-fit: cover;
 }
 
@@ -33,7 +35,24 @@
   font-size: var(--heading-font-size-m);
   font-weight: 500;
   display: block;
-  margin-bottom: var(--spacing-xs);
+  margin-bottom: var(--spacing-s);
+}
+
+/* h3 headings inside cards (article, navigation tile patterns) */
+.cards .cards-card-body h3 {
+  font-size: var(--heading-font-size-m);
+  margin-top: 0;
+  margin-bottom: var(--spacing-s);
+}
+
+/* Date text: match original (not italic) */
+.cards .cards-card-body em {
+  font-style: normal;
+}
+
+/* Fee/label strong inherits gray text color (not global navy override) */
+.cards .cards-card-body p:not(:first-child) strong {
+  color: inherit;
 }
 
 .cards .cards-card-body p {
@@ -47,23 +66,26 @@
 .cards .cards-card-body p:last-child a.button {
   background: transparent;
   border: 0;
+  border-bottom: 1px solid var(--color-navy);
+  border-radius: 0;
   color: var(--color-navy);
   font-size: var(--body-font-size-s);
   font-weight: 500;
-  padding: 0;
+  padding: 0 0 2px;
   margin: var(--spacing-s) 0 0;
   min-height: unset;
-  text-decoration: underline;
-  text-underline-offset: 4px;
+  text-decoration: none;
   white-space: normal;
   display: inline;
+  transition: border-bottom-color var(--transition-fast);
 }
 
 .cards .cards-card-body p:last-child a.button:hover,
 .cards .cards-card-body p:last-child a.button:focus {
   box-shadow: none;
-  text-decoration: underline;
+  text-decoration: none;
   color: var(--link-hover-color);
+  border-bottom-color: transparent;
 }
 
 @media (width >= 600px) {
@@ -75,7 +97,6 @@
   .cards .cards-card-body {
     padding: var(--spacing-m);
   }
-}
 
 @media (width >= 900px) {
   .cards > ul {
@@ -90,6 +111,8 @@
 
   .cards .cards-card-body p:first-child strong {
     font-size: var(--heading-font-size-l);
+  .cards .cards-card-body h3 {
+    font-size: 28px;
   }
 
   .cards .cards-card-body p {
@@ -98,6 +121,18 @@
 
   .cards .cards-card-body p:last-child a.button {
     font-size: var(--body-font-size-m);
+  }
+}
+
+/* 3-column grid at desktop when 3+ cards (preserves 2-col for 2-card sets) */
+@media (width >= 900px) {
+  .cards:not(.icon-nav) > ul:has(> li:nth-child(3)) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+
+  .cards:not(.icon-nav) > ul:has(> li:nth-child(3)) .cards-card-body {
+    padding: 32px;
   }
 }
 
@@ -242,11 +277,14 @@
   display: flex;
   justify-content: center;
   margin-bottom: 12px;
+  aspect-ratio: auto;
+  overflow: visible;
 }
 
 .cards.icon-nav .cards-card-image-link {
   display: flex;
   text-decoration: none;
+  border-bottom: 0;
 }
 
 .cards.icon-nav > ul > li img {
@@ -356,3 +394,26 @@
     font-size: var(--body-font-size-m);
   }
 }
+
+/* ========================================
+   Directory variant - help topic link cards
+   (text-only cards with lists of links)
+   ======================================== */
+.cards.directory > ul > li {
+  border: 1px solid var(--color-gray-border);
+  box-shadow: none;
+}
+
+/* Topic links: display each link on its own line */
+.cards.directory .cards-card-body p:not(:first-child, :last-child) a {
+  display: block;
+  margin-bottom: var(--spacing-xs);
+}
+
+/* Separator before category link */
+.cards.directory .cards-card-body p:last-child {
+  border-top: 1px solid var(--color-gray-border);
+  padding-top: var(--spacing-s);
+  margin-top: var(--spacing-s);
+}
+

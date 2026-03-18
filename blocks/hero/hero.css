@@ -121,6 +121,9 @@
   transform: rotate(45deg);
   margin: 0 10px;
   opacity: 0.8;
+/* Override global strong navy color — must be white on navy hero background */
+.hero strong {
+  color: inherit;
 }
 
 .hero picture {

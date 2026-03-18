@@ -64,6 +64,14 @@
   --spacing-l: 40px;
   --spacing-xl: 64px;
 
+  /* cards */
+  --card-border-radius: 16px;
+  --card-box-shadow: rgb(128 131 142 / 50%) 0px 1px 2px 1px;
+  --card-box-shadow-hover: rgb(128 131 142 / 50%) 0px 4px 8px 2px;
+
+  /* transitions */
+  --transition-fast: 0.2s ease;
+
   /* nav heights */
   --nav-height: 172px;
   --breadcrumbs-height: 34px;
@@ -155,9 +163,9 @@ h6 {
   margin-bottom: 0.25em;
   font-family: var(--heading-font-family);
   font-weight: 500;
-  line-height: 1.2;
+  line-height: 1.1;
   scroll-margin: 40px;
-  color: var(--color-navy-dark);
+  color: var(--color-navy);
 }
 
 h1 { font-size: var(--heading-font-size-xxl); }
@@ -190,6 +198,27 @@ pre {
   white-space: pre;
 }
 
+/* blockquote - info notice pattern */
+blockquote {
+  margin: var(--spacing-m) 0;
+  padding: var(--spacing-s) var(--spacing-m);
+  background-color: var(--color-blue-light);
+  border-left: 4px solid var(--color-blue-medium);
+  border-radius: 4px;
+}
+
+blockquote p {
+  margin: 0.5em 0;
+}
+
+blockquote p:first-child {
+  margin-top: 0;
+}
+
+blockquote p:last-child {
+  margin-bottom: 0;
+}
+
 main > div {
   margin: 40px 16px;
 }
@@ -211,13 +240,17 @@ a:any-link {
 
 a:hover {
   color: var(--link-hover-color);
-  text-decoration: underline;
 }
 
-/* All non-button links in main content get underlines for accessibility */
+/* Non-button links in main content use border-bottom (Nationwide pattern) */
 main a:any-link:not(.button) {
-  text-decoration: underline;
-  text-underline-offset: 4px;
+  text-decoration: none;
+  border-bottom: 1px solid currentcolor;
+  transition: border-bottom-color var(--transition-fast);
+}
+
+main a:hover:not(.button) {
+  border-bottom-color: transparent;
 }
 
 /* buttons - default (text link CTA) */
@@ -495,6 +528,19 @@ main .section.footnote p {
   :root {
     --heading-font-size-l: 24px;
   }
+}
+
+/* strong text */
+strong {
+  font-weight: 700;
+  color: var(--color-navy);
+}
+
+/* horizontal rules */
+hr {
+  border: none;
+  border-top: 1px solid var(--color-gray-border);
+  margin: var(--spacing-l) 0;
 }
 
 /* Hide metadata and section-metadata blocks */
